@@ -1,4 +1,7 @@
-env\Scripts
-env\Lib
-env\Include
-pyvenv.cfg
+# Jetbrains
+.idea
+
+# Node.js
+node_modules/
+package.json
+package-lock.json
