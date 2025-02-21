@@ -1,0 +1,4 @@
+env\Scripts
+env\Lib
+env\Include
+pyvenv.cfg
