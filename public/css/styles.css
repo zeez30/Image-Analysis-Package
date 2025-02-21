@@ -1,13 +1,172 @@
+/* Global Styling */
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: sans-serif;
-    margin: 20px;
-    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    /* Placeholder font for now, can change later */
+    font-family: verdana, sans-serif;
 }
 
-h1 {
-    color: #333;
+/*
+Grid Container and Boxes
+Grids are used here since they're much more rigid than flexboxes and are better suited for our use case
+*/
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: 0.5fr 1.0fr repeat(7, 1fr);
+    grid-column-gap: 5px;
+    grid-row-gap: 5px;
+    width: 100vw;
+    height: 100vh;
 }
 
-p {
-    color: #666;
+/* Navbar (where the file, edit and other more technical options are) */
+.navbar {
+    grid-area: 1 / 1 / 2 / 11;
+    display: flex;
+    align-items: stretch;
+    border: 5px solid black;
+
+    ul {
+        display: flex;
+        list-style: none;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    ul li {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .logo-container {
+        width: auto;
+        height: 50px;
+        /*
+        Background colour set to red for debugging purposes
+        If working correctly, no red should be visible
+        */
+        background-color: red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            max-width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+
+    .navbar-content {
+        padding-left: 20px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Toolbar (where the buttons for each tool will go) */
+.toolbar {
+    grid-area: 2 / 1 / 3 / 11;
+    border: 5px solid black;
+    display: flex;
+    align-items: center;
+
+    ul {
+        display: flex;
+        list-style: none;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    ul li {
+        border: 5px solid black;
+        padding: 20px 50px;
+        margin: 0;
+    }
+}
+
+/* Input Box (where the data is input) */
+.inputBox {
+    grid-area: 3 / 1 / 10 / 3;
+    border: 5px solid black;
+    display: flex;
+    align-items: stretch;
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    ul li {
+        border: 5px solid black;
+        padding: 10px;
+        margin: 10px;
+
+        /* Styling for number-only input forms */
+        input[type=number]{
+            padding: 5px;
+            margin: 5px;
+            width: 100%;
+
+            placeholder {
+                font-weight: bold;
+                opacity: 0.5;
+                color: darkgrey;
+            }
+        }
+    }
+}
+
+/* Output Box (where the data is output) */
+.outputBox {
+    grid-area: 3 / 9 / 10 / 11;
+    border: 5px solid black;
+    display: flex;
+    align-items: stretch;
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        list-style: none;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    ul li {
+        border: 5px solid black;
+        padding: 10px;
+        margin: 10px;
+    }
+}
+
+/* Image Box (where the imported image goes) */
+.imageBox {
+    grid-area: 3 / 3 / 10 / 9;
+    border: 5px solid black;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    background-color: black;
+
+    img {
+        max-width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 }
