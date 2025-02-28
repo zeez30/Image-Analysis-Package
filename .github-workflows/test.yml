@@ -1,0 +1,7 @@
+name: Node.js Tests
+
+on:
+  push:
+    branches: [ "main", "develop" ]  # Trigger on pushes to these branches
+  pull_request:
+    branches: [ "main", "develop" ]  # Trigger on pull requests targeting these branches
