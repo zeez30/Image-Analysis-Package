@@ -5,3 +5,11 @@ on:
     branches: [ "main", "develop" ]  # Trigger on pushes to these branches
   pull_request:
     branches: [ "main", "develop" ]  # Trigger on pull requests targeting these branches
+jobs:
+  test:
+    runs-on: ${{ matrix.os }} # Matrix to define OS
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]  # Test with different Node.js versions
+        os: [windows-latest] # Test on Windows
