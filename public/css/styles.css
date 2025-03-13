@@ -4,6 +4,7 @@
 }
 
 body {
+    background-color: #4b4453;
     margin: 0;
     padding: 0;
     /* Placeholder font for now, can change later */
@@ -26,6 +27,7 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 
 /* Navbar (where the file, edit and other more technical options are) */
 .navbar {
+    background-color: #4b4453;
     grid-area: 1 / 1 / 2 / 11;
     display: flex;
     align-items: stretch;
@@ -72,6 +74,7 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 
 /* Toolbar (where the buttons for each tool will go) */
 .toolbar {
+    background-color: #4b4453;
     grid-area: 2 / 1 / 3 / 11;
     border: 5px solid black;
     display: flex;
@@ -96,6 +99,7 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 
 /* Input Box (where the data is input) */
 .inputBox {
+    background-color: #4b4453;
     grid-area: 3 / 1 / 10 / 3;
     border: 5px solid black;
     display: flex;
@@ -133,6 +137,7 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 
 /* Output Box (where the data is output) */
 .outputBox {
+    background-color: #4b4453;
     grid-area: 3 / 9 / 10 / 11;
     border: 5px solid black;
     display: flex;
