@@ -28,6 +28,7 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 .navbar {
     grid-area: 1 / 1 / 2 / 11;
     display: flex;
+    /*justify-content: space-between;*/
     align-items: stretch;
     border: 5px solid black;
 
@@ -63,11 +64,38 @@ Grids are used here since they're much more rigid than flexboxes and are better 
         }
     }
 
-    .navbar-content {
-        padding-left: 20px;
-        display: flex;
-        align-items: center;
-    }
+    /*.navbar-content {*/
+    /*    padding-left: 20px;*/
+    /*    display: flex;*/
+    /*    align-items: center;*/
+    /*}*/
+}
+
+#auth-container {
+    grid-area: 1 / 7 / 2 / 11;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#auth-container input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#auth-container button {
+    padding: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#auth-container button:hover {
+    background-color: #0056b3;
 }
 
 /* Toolbar (where the buttons for each tool will go) */
@@ -155,16 +183,26 @@ Grids are used here since they're much more rigid than flexboxes and are better 
     }
 }
 
-/* Image Box (where the imported image goes) */
-.imageBox {
+/* Image Container (where the imported image goes) */
+.imageContainer {
     grid-area: 3 / 3 / 10 / 9;
     border: 5px solid black;
     display: flex;
     align-items: stretch;
     justify-content: center;
-    background-color: black;
+    background-color: #d2d2d2;
+
+    #fileUpload {
+        align-self: center;
+        padding: 10px;
+        border: 1px solid black;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #737373;
+    }
 
     img {
+        display: none;
         max-width: 100%;
         height: 100%;
         object-fit: contain;
