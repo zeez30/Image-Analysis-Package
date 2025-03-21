@@ -16,7 +16,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Database Connection
-mongoose.connect('mongodb+srv://administrator:administrator@imageanalysis.ne3pu.mongodb.net/?retryWrites=true&w=majority&appName=imageAnalysis', {
+mongoose.connect('mongodb+srv://administrator:uMi56bBlMpbOk2IN@imageanalysis.ne3pu.mongodb.net/?retryWrites=true&w=majority&appName=imageAnalysis', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
