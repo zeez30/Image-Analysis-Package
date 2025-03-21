@@ -42,3 +42,4 @@ const imageSchema = new mongoose.Schema({
 newImage.save()
     .then(() => console.log('Image Saved'))
     .catch((err) => console.log('Error Saving Image', err));
+
