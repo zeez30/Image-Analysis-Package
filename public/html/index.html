@@ -14,11 +14,38 @@
                 <img class="logo" src="../img/logo.png" alt="logo">
             </div>
             <ul>
-                <li>File</li>
-                <li>Edit</li>
-                <li>View</li>
-                <li>Tools</li>
-                <li>Help</li>
+                <li class="dropdown">
+                    File
+                    <div class="dropdown-content">
+                        <a href="#">Save</a>
+                        <a href="#">Save As</a>
+                        <a href="#">Load</a>
+                        <a href="#">Export</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    Edit
+                    <div class="dropdown-content">
+                        <label>
+                            Toggle Greyscale <input type="checkbox">
+                        </label>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    View
+                    <div class="dropdown-content">
+                        <label>
+                            Zoom <input type="range" min="1" max="100" value="50" class="slider">
+                        </label>
+                    </div>
+                </li>
+<!--                <li>Tools</li>-->
+                <li class="dropdown">
+                    Help
+                    <div class="dropdown-content">
+                        <a href="#">Info</a>
+                    </div>
+                </li>
             </ul>
         </div>
 
@@ -32,11 +59,11 @@
 
         <div class="toolbar">
             <ul>
-                <li>Tool 1</li>
-                <li>Tool 2</li>
-                <li>Tool 3</li>
-                <li>Tool 4</li>
-                <li>Tool 5</li>
+                <li><button>Tool 1</button></li>
+                <li><button>Tool 2</button></li>
+                <li><button>Tool 3</button></li>
+                <li><button>Tool 4</button></li>
+                <li><button>Tool 5</button></li>
             </ul>
         </div>
 
