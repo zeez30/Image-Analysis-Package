@@ -6,86 +6,128 @@
     <title>Image Analysis Tool</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
+
 <body>
-<div class="grid-container">
-    <div class="navbar">
-        <div class="logo-container">
-            <img class="logo" src="../img/logo.png" alt="logo">
-        </div>
-        <ul>
-            <li>File</li>
-            <li>Edit</li>
-            <li>View</li>
-            <li>Tools</li>
-            <li>Help</li>
-        </ul>
-    </div>
-    <div id="auth-container">
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <button id="registerButton">Register</button>
-        <button id="loginButton">Login</button>
-        <button id="logoutButton" style="display: none;">Logout</button>
-    </div>
-
-    <div class="toolbar">
-        <ul>
-            <li>Tool 1</li>
-            <li>Tool 2</li>
-            <li>Tool 3</li>
-            <li>Tool 4</li>
-            <li>Tool 5</li>
-        </ul>
-    </div>
-
-    <div class="calibrationPanel">
-        <h3>Calibration</h3>
-
-        <label for="scalingFactor">Scaling Factor:</label>
-        <input type="number" id="scalingFactor" placeholder="Enter scaling factor">
-
-        <h4>Calibration Points</h4>
-
-        <div class="calibrationPoint">
-            <label for="x1">X1:</label>
-            <input type="number" id="x1">
-            <label for="y1">Y1:</label>
-            <input type="number" id="y1">
+    <div class="grid-container">
+        <div class="navbar">
+            <div class="logo-container">
+                <img class="logo" src="../img/logo.png" alt="logo">
+            </div>
+            <ul>
+                <li class="dropdown">
+                    File
+                    <div class="dropdown-content">
+                        <a href="#">Save</a>
+                        <a href="#">Save As</a>
+                        <a href="#">Load</a>
+                        <a href="#">Export</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    Edit
+                    <div class="dropdown-content">
+                        <label>
+                            Toggle Greyscale <input type="checkbox">
+                        </label>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    View
+                    <div class="dropdown-content">
+                        <label>
+                            Zoom <input type="range" min="1" max="100" value="50" class="slider">
+                        </label>
+                    </div>
+                </li>
+<!--                <li>Tools</li>-->
+                <li class="dropdown">
+                    Help
+                    <div class="dropdown-content">
+                        <a href="#">Info</a>
+                    </div>
+                </li>
+            </ul>
         </div>
 
-        <div class="calibrationPoint">
-            <label for="x2">X2:</label>
-            <input type="number" id="x2">
-            <label for="y2">Y2:</label>
-            <input type="number" id="y2">
+        <div id="auth-container">
+            <label><input type="text" id="username" placeholder="Username"></label>
+            <label><input type="password" id="password" placeholder="Password"></label>
+            <button id="registerButton">Register</button>
+            <button id="loginButton">Login</button>
+            <button id="logoutButton" style="display: none;">Logout</button>
         </div>
 
-        <label for="realDistance">Real-World Distance:</label>
-        <input type="number" id="realDistance" placeholder="Distance in units">
+        <div class="toolbar">
+            <ul>
+                <li><button>Tool 1</button></li>
+                <li><button>Tool 2</button></li>
+                <li><button>Tool 3</button></li>
+                <li><button>Tool 4</button></li>
+                <li><button>Tool 5</button></li>
+            </ul>
+        </div>
 
-        <button id="applyCalibration">Apply Calibration</button>
-        <button id="resetCalibration">Reset Calibration</button>
-        <button id="detectMicronBar">Detect Micron Bar (Optional)</button>
+        <div class="inputBox">
+        <!--Input placeholder number-only forms for future use/as an example-->
+            <ul>
+                <li>
+                    Input 1
+                    <form>
+                        <label>
+                            <input type="number" placeholder="Input number here">
+                        </label>
+                    </form>
+                </li>
+                <li>
+                    Input 2
+                    <form>
+                        <label>
+                            <input type="number" placeholder="Input number here">
+                        </label>
+                    </form>
+                </li>
+                <li>
+                    Input 3
+                    <form>
+                        <label>
+                            <input type="number" placeholder="Input number here">
+                        </label>
+                    </form>
+                </li>
+                <li>
+                    Input 4
+                    <form>
+                        <label>
+                            <input type="number" placeholder="Input number here">
+                        </label>
+                    </form>
+                </li>
+                <li>
+                    Input 5
+                    <form>
+                        <label>
+                            <input type="number" placeholder="Input number here">
+                        </label>
+                    </form>
+                </li>
+            </ul>
+        </div>
 
-        <p id="calibrationStatus"></p>  <!-- Add a status message area -->
+        <div class="outputBox">
+            <ul>
+                <li>Output 1</li>
+                <li>Output 2</li>
+                <li>Output 3</li>
+                <li>Output 4</li>
+                <li>Output 5</li>
+            </ul>
+        </div>
+
+        <div class="imageContainer">
+            <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/tiff">
+            <img id="outputImage" src="" alt="">
+        </div>
     </div>
-
-    <div class="outputBox">
-        <ul>
-            <li>Output 1</li>
-            <li>Output 2</li>
-            <li>Output 3</li>
-            <li>Output 4</li>
-            <li>Output 5</li>
-        </ul>
-    </div>
-
-    <div class="imageContainer">
-        <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/tiff">
-        <canvas id="imageCanvas"></canvas>
-    </div>
-</div>
-Use code with caution.
 </body>
 <script src="../js/script.js"></script>
 </html>
