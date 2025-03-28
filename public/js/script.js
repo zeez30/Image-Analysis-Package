@@ -187,3 +187,142 @@ logoutButton.addEventListener('click', logout);
 // Initial UI Update
 updateUI(); // Update UI when page loads
 loadImage(); // Load saved image when page loads
+
+// calibration panel
+document.addEventListener('DOMContentLoaded', () => {
+    const fileUpload = document.getElementById('fileUpload'); //Reassign to the canvas functionality
+    const imageCanvas = document.getElementById('imageCanvas');
+    const ctx = imageCanvas.getContext('2d'); // Get the canvas context
+    const scalingFactorInput = document.getElementById('scalingFactor');
+    const x1Input = document.getElementById('x1');
+    const y1Input = document.getElementById('y1');
+    const x2Input = document.getElementById('x2');
+    const y2Input = document.getElementById('y2');
+    const realDistanceInput = document.getElementById('realDistance');
+    const applyCalibrationButton = document.getElementById('applyCalibration');
+    const resetCalibrationButton = document.getElementById('resetCalibration');
+    const detectMicronBarButton = document.getElementById('detectMicronBar');
+    const calibrationStatus = document.getElementById('calibrationStatus');
+
+    let img = new Image(); // Create a new Image object
+    let imageLoaded = false;
+    let point1 = null;
+    let point2 = null;
+    let pixelToRealRatio = null;
+    let originalImageBase64 = null; // Store the original image data
+
+    // Load image and display it on the canvas
+    fileUpload.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                img.onload = () => {
+                    imageCanvas.style.display = 'block';
+                    outputImage.style.display = 'none'; // Hide the img tag
+                    imageCanvas.width = img.width;
+                    imageCanvas.height = img.height;
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+                    imageLoaded = true;
+
+                    // Store the original image data as a base64 string
+                    originalImageBase64 = imageCanvas.toDataURL();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Function to draw a circle on the canvas
+    function drawCircle(x, y) {
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+    }
+
+    // Handle canvas clicks for point selection
+    imageCanvas.addEventListener('click', (event) => {
+        if (!imageLoaded) {
+            alert('Please upload an image first.');
+            return;
+        }
+
+        const x = event.offsetX;
+        const y = event.offsetY;
+
+        if (!point1) {
+            point1 = { x, y };
+            x1Input.value = x;
+            y1Input.value = y;
+            drawCircle(x, y);
+        } else if (!point2) {
+            point2 = { x, y };
+            x2Input.value = x;
+            y2Input.value = y;
+            drawCircle(x, y);
+        }
+    });
+
+    // Apply Calibration
+    applyCalibrationButton.addEventListener('click', () => {
+        if (!point1 || !point2) {
+            calibrationStatus.textContent = 'Please select two calibration points.';
+            return;
+        }
+
+        const realDistance = parseFloat(realDistanceInput.value);
+        if (isNaN(realDistance)) {
+            calibrationStatus.textContent = 'Please enter a valid real-world distance.';
+            return;
+        }
+
+        const pixelDistance = Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+        pixelToRealRatio = realDistance / pixelDistance;
+
+        const scalingFactor = parseFloat(scalingFactorInput.value);
+        if (!isNaN(scalingFactor)) {
+            // Reset transform
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(scalingFactor, scalingFactor);
+
+            // Clear canvas and redraw image
+            ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+
+            //Redraw the circles after scaling
+            drawCircle(point1.x, point1.y);
+            drawCircle(point2.x, point2.y);
+        }
+
+        calibrationStatus.textContent = `Calibration applied. Pixel to real-world ratio: ${pixelToRealRatio.toFixed(4)}`;
+    });
+
+    // Reset Calibration
+    resetCalibrationButton.addEventListener('click', () => {
+        point1 = null;
+        point2 = null;
+        pixelToRealRatio = null;
+
+        x1Input.value = '';
+        y1Input.value = '';
+        x2Input.value = '';
+        y2Input.value = '';
+        realDistanceInput.value = '';
+        scalingFactorInput.value = '';
+        calibrationStatus.textContent = '';
+
+        // Reset transform
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        // Clear canvas and redraw the original image
+        ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+    });
+
+    // Detect Micron Bar (Placeholder)
+    detectMicronBarButton.addEventListener('click', () => {
+        alert('Micron bar detection not implemented yet.');
+    });
+});
