@@ -26,7 +26,7 @@ router.post('/', verifyToken, async (req, res) => {
             userId: req.userId,
             imageData,
             mimeType,
-            originalFilename: filename,
+            originalFileName: filename,
             size,
         });
         await image.save();
