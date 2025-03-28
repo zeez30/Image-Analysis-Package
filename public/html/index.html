@@ -67,51 +67,38 @@
             </ul>
         </div>
 
-        <div class="inputBox">
-        <!--Input placeholder number-only forms for future use/as an example-->
-            <ul>
-                <li>
-                    Input 1
-                    <form>
-                        <label>
-                            <input type="number" placeholder="Input number here">
-                        </label>
-                    </form>
-                </li>
-                <li>
-                    Input 2
-                    <form>
-                        <label>
-                            <input type="number" placeholder="Input number here">
-                        </label>
-                    </form>
-                </li>
-                <li>
-                    Input 3
-                    <form>
-                        <label>
-                            <input type="number" placeholder="Input number here">
-                        </label>
-                    </form>
-                </li>
-                <li>
-                    Input 4
-                    <form>
-                        <label>
-                            <input type="number" placeholder="Input number here">
-                        </label>
-                    </form>
-                </li>
-                <li>
-                    Input 5
-                    <form>
-                        <label>
-                            <input type="number" placeholder="Input number here">
-                        </label>
-                    </form>
-                </li>
-            </ul>
+        <div class="calibrationPanel">
+            <h3>Calibration</h3>
+
+            <label for="scalingFactor">Scaling Factor:</label>
+            <input type="number" id="scalingFactor" placeholder="Enter scaling factor">
+
+            <h4>Calibration Points</h4>
+
+            <div class="calibrationPoint">
+                <label for="x1">X1:</label>
+                <input type="number" id="x1">
+                <label for="y1">Y1:</label>
+                <input type="number" id="y1">
+            </div>
+
+            <div class="calibrationPoint">
+                <label for="x2">X2:</label>
+                <input type="number" id="x2">
+                <label for="y2">Y2:</label>
+                <input type="number" id="y2">
+            </div>
+
+            <label for="realDistance">Real-World Distance:</label>
+            <input type="number" id="realDistance" placeholder="Distance in units">
+
+            <button id="applyCalibration">Apply Calibration</button>
+            <button id="resetCalibration">Reset Calibration</button>
+            <button id="detectMicronBar">Detect Micron Bar (Optional)</button>
+
+            <p id="calibrationStatus"></p>  <!-- Add a status message area -->
         </div>
+
 
         <div class="outputBox">
             <ul>
