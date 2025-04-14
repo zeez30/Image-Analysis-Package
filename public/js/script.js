@@ -166,6 +166,7 @@ async function loadImage() {
                 if (data && data.imageData) { // If image data exists
                     outputImage.src = `data:${data.mimeType};base64,${data.imageData}`; // Set image src
                     outputImage.style.display = 'block'; // Show image
+                    fileInput.style.display = 'none'; // Hides the file input button
                 } else {
                     outputImage.style.display = 'none'; // Hide image
                     outputImage.src = ''; // Clear image src
