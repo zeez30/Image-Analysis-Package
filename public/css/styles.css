@@ -100,9 +100,9 @@ align-items: stretch;
     }
 
     /*.navbar-content {*/
-    /*    padding-left: 20px;*/
-    /*    display: flex;*/
-    /*    align-items: center;*/
+    /* padding-left: 20px;*/
+    /* display: flex;*/
+    /* align-items: center;*/
     /*}*/
 }
 
@@ -177,36 +177,81 @@ align-items: stretch;
     grid-area: 3 / 1 / 10 / 3;
     border: 5px solid black;
     display: flex;
+    flex-direction: column; /* Arrange calibration elements vertically */
     align-items: stretch;
+    padding: 10px;
+}
 
-    ul {
-        display: flex;
-        flex-direction: column;
-        list-style: none;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
+.inputBox > div#calibrationPanel {
+    margin-bottom: 15px;
+    border: 5px solid black; /* Add border to the calibration panel */
+    padding: 15px;
+}
 
-    ul li {
-        border: 5px solid black;
-        padding: 10px;
-        margin: 10px;
+.inputBox h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
 
-        /* Styling for number-only input forms */
-        input[type=number]{
-            padding: 5px;
-            margin: 5px;
-            width: 100%;
+.inputBox p {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: #555;
+}
 
-            placeholder {
-                font-weight: bold;
-                opacity: 0.5;
-                color: darkgrey;
-            }
-        }
-    }
+.inputBox label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.inputBox input[type=text],
+.inputBox input[type=number] {
+    padding: 8px;
+    width: calc(100% - 16px); /* Adjust for padding */
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.inputBox button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: inherit;
+    margin-bottom: 10px;
+}
+
+.inputBox button:hover {
+    background-color: #0056b3;
+}
+
+.inputBox div#calibrationInfo {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+.inputBox ul {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.inputBox ul li {
+    border: 5px solid black;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 /* Output Box (where the data is output) */
@@ -241,83 +286,35 @@ align-items: stretch;
     align-items: center; /* Vertically center */
     justify-content: center; /* Horizontally center */
     background-color: #d2d2d2;
-
-    #fileUpload {
-        align-self: center;
-        padding: 10px;
-        border: 1px solid black;
-        border-radius: 5px;
-        cursor: pointer;
-        background-color: #737373;
-    }
-
-    img {
-        display: none;
-        max-width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    canvas {
-        display: none; /* Initially hidden */
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-    }
+    position: relative; /* To allow absolute positioning of canvas */
 }
 
-/*calibration panel*/
-
-.calibrationPanel {
-    grid-area: 3 / 1 / 10 / 3; /* Same grid area as the original inputBox */
-    border: 5px solid black;
+.imageContainer #fileUpload {
+    align-self: center;
     padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch; /* Make elements fill width */
-}
-
-.calibrationPanel h3 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.calibrationPanel label {
-    margin-top: 5px;
-    margin-bottom: 2px;
-}
-
-.calibrationPanel input[type="number"] {
-    padding: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.calibrationPoint {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-}
-
-.calibrationPoint label {
-    width: 20px;
-}
-
-.calibrationPoint input[type="number"] {
-    width: 70px;
-}
-
-.calibrationPanel button {
-    padding: 8px 12px;
-    background-color: grey; /* Green */
-    color: white;
-    border: none;
-    border-radius: 4px;
+    border: 1px solid black;
+    border-radius: 5px;
     cursor: pointer;
-    margin-top: 5px;
+    background-color: #737373;
+    color: white;
 }
 
-.calibrationPanel button:hover {
-    background-color: darkgrey;
+.imageContainer img#outputImage {
+    display: none;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.imageContainer canvas#calibrationCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: crosshair;
 }

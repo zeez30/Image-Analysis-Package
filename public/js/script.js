@@ -1,29 +1,151 @@
+// Button Functionality
+const loadButton = document.getElementById('loadButton');
+
+loadButton.addEventListener('click', (e) => {
+    fileInput.click();
+})
+
 // Image Uploader
 const fileInput = document.querySelector('#fileUpload');
-const imageUploaderOutput = document.getElementById('outputImage');
+const calibrationCanvas = document.getElementById('calibrationCanvas');
+const ctx = calibrationCanvas.getContext('2d');
+
+// Calibration Elements
+const calibrationPanel = document.getElementById('calibrationPanel');
+const resetPointsButton = document.getElementById('resetPointsButton');
+const knownDistanceInput = document.getElementById('knownDistance');
+const unitsInput = document.getElementById('units');
+const calibrateButton = document.getElementById('calibrateButton');
+const calibrationInfo = document.getElementById('calibrationInfo');
+
+let point1 = null;
+let point2 = null;
+let pixelDistance = null;
+let calibrationFactor = null; // Real-world units per pixel
+
+function drawPoint(point, color) {
+    if (point && ctx) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+}
+
+function handleCanvasClick(event) {
+    const rect = calibrationCanvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    const scaleX = calibrationCanvas.width / rect.width;
+    const scaleY = calibrationCanvas.height / rect.height;
+
+    const adjustedX = x * scaleX;
+    const adjustedY = y * scaleY;
+
+    if (!point1) {
+        point1 = { x: adjustedX, y: adjustedY };
+        drawPoint(point1, 'red');
+    } else if (!point2) {
+        point2 = { x: adjustedX, y: adjustedY };
+        drawPoint(point2, 'blue');
+    }
+}
+
+function resetPoints() {
+    point1 = null;
+    point2 = null;
+    pixelDistance = null;
+    calibrationFactor = null;
+    calibrationInfo.textContent = '';
+    redrawCanvas();
+}
+
+function calculatePixelDistance() {
+    if (point1 && point2) {
+        const dx = point2.x - point1.x;
+        const dy = point2.y - point1.y;
+        pixelDistance = Math.sqrt(dx * dx + dy * dy);
+        return pixelDistance;
+    }
+    return null;
+}
+
+function calibrateImage() {
+    if (point1 && point2) {
+        const knownDistance = parseFloat(knownDistanceInput.value);
+        const units = unitsInput.value.trim();
+
+        if (isNaN(knownDistance) || knownDistance <= 0 || !units) {
+            alert("Please enter a valid known distance and units.");
+            return;
+        }
+
+        const pixelDistance = calculatePixelDistance();
+
+        if (pixelDistance) {
+            calibrationFactor = knownDistance / pixelDistance; // Units per pixel
+            calibrationInfo.textContent = `Calibration Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`;
+            alert(`Calibration successful! Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`);
+            localStorage.setItem('calibrationFactor', calibrationFactor);
+            localStorage.setItem('calibrationUnits', units);
+        } else {
+            alert("Please select two points on the image first.");
+        }
+    } else {
+        alert("Please select two points on the image first.");
+    }
+}
+
+function redrawCanvas() {
+    const storedImage = localStorage.getItem('uploadedImage');
+    if (storedImage) {
+        const img = new Image();
+        img.onload = () => {
+            calibrationCanvas.width = img.naturalWidth;
+            calibrationCanvas.height = img.naturalHeight;
+            ctx.drawImage(img, 0, 0, calibrationCanvas.width, calibrationCanvas.height);
+            drawPoint(point1, 'red');
+            drawPoint(point2, 'blue');
+        };
+        img.src = storedImage;
+        calibrationCanvas.style.display = 'block';
+        calibrationCanvas.addEventListener('click', handleCanvasClick);
+    } else {
+        calibrationCanvas.style.display = 'none';
+        calibrationCanvas.removeEventListener('click', handleCanvasClick);
+        point1 = null;
+        point2 = null;
+        pixelDistance = null;
+        calibrationFactor = null;
+        calibrationInfo.textContent = '';
+    }
+}
 
 // Event listener to check if user has selected file
 fileInput.addEventListener("change", async () => {
     let [file] = fileInput.files;
 
-    // Reads file as data URL
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        imageUploaderOutput.src = e.target.result;
-        imageUploaderOutput.style.display = 'block'; //Shows the image
-        fileInput.style.display = 'none'; // Hides the file input button
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            localStorage.setItem('uploadedImage', e.target.result); // Store image data in local storage
+            redrawCanvas(); // Draw the image on the canvas
+            fileInput.style.display = 'none'; // Hide the file input button
+        }
+
+        reader.onerror = (err) => {
+            console.error("Error reading file:", err);
+            alert("An error occurred while reading the file");
+        }
+
+        reader.readAsDataURL(file);
     }
+});
 
-    reader.onerror = (err) => {
-        console.error("Error reading file:", err);
-        alert("An error occurred while reading the file");
-    }
-
-    // Sets img element src to data URL of file
-    reader.readAsDataURL(file);
-})
-
-//---------------------
+function setupCalibrationCanvas() {
+    redrawCanvas(); // Call redrawCanvas to handle initial setup or image change
+}
 
 // Auth Elements
 const usernameInput = document.getElementById('username');
@@ -32,10 +154,6 @@ const registerButton = document.getElementById('registerButton');
 const loginButton = document.getElementById('loginButton');
 const logoutButton = document.getElementById('logoutButton');
 // const authContainer = document.getElementById('auth-container');
-
-// Image Elements
-const fileUpload = document.getElementById('fileUpload');
-const outputImage = document.getElementById('outputImage');
 
 // Authentication Functions
 async function register() {
@@ -92,10 +210,19 @@ async function login() {
 function logout() {
     localStorage.removeItem('token'); // Remove token from local storage
     localStorage.removeItem('userId'); // Remove userId from local storage
+    localStorage.removeItem('calibrationFactor'); // Remove calibration data
+    localStorage.removeItem('calibrationUnits');
+    localStorage.removeItem('uploadedImage'); // Remove stored image data
     alert('Logout successful!');
+    fileInput.style.display = 'block';
+    calibrationCanvas.style.display = 'none'; // Hide canvas
+    calibrationCanvas.removeEventListener('click', handleCanvasClick);
+    point1 = null;
+    point2 = null;
+    pixelDistance = null;
+    calibrationFactor = null;
+    calibrationInfo.textContent = '';
     updateUI(); // Update UI to reflect logged-out state
-    outputImage.style.display = 'none'; // Hide image
-    outputImage.src = ''; // Clear image src
 }
 
 function updateUI() {
@@ -117,66 +244,76 @@ function updateUI() {
 
 // Image Functions
 fileUpload.addEventListener('change', async (event) => {
-    const file = event.target.files[0]; // Get selected file
-    const reader = new FileReader(); // Create new FileReader
+    const file = event.target.files[0];
+    const reader = new FileReader();
 
-    reader.onload = async (e) => { // When file is loaded
-        const base64Image = e.target.result.split(',')[1]; // Get base64 encoded image data
-        const mimeType = file.type; // Get the MIME type of the file
-        const filename = file.name; // Get the filename
-        const size = file.size; // Get size of file
-        const token = localStorage.getItem('token'); // Get token from local storage
+    reader.onload = async (e) => {
+        const base64Image = e.target.result.split(',')[1];
+        const mimeType = file.type;
+        const filename = file.name;
+        const size = file.size;
+        const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch('/api/images', { // Send post request to the images endpoint
+            const response = await fetch('/api/images', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ imageData: base64Image, mimeType, filename, size }), // Send image data in request body
+                body: JSON.stringify({ imageData: base64Image, mimeType, filename, size }),
             });
 
-            if (response.ok) { // If successful
+            if (response.ok) {
                 alert('Image saved successfully!');
-                loadImage(); // Load saved image
+                loadImage(); // Load the saved image onto the canvas
             } else {
-                const data = await response.json(); // Parse JSON for error messages
+                const data = await response.json();
                 alert(`Image save failed: ${data.message}`);
             }
         } catch (error) {
-            console.error('Error saving image:', error); // Log errors
+            console.error('Error saving image:', error);
             alert('An error occurred while saving the image.');
         }
     };
 
-    reader.readAsDataURL(file); // Read file as a data URL
+    reader.readAsDataURL(file);
 });
 
 async function loadImage() {
-    const token = localStorage.getItem('token'); // Get token from local storage
-    if (token) { // If user is logged in
+    const token = localStorage.getItem('token');
+    if (token) {
         try {
-            const response = await fetch('/api/images', { // Send GET request to the images endpoint
-                headers: { 'Authorization': `Bearer ${token}` }, // Include token in authorization header
+            const response = await fetch('/api/images', {
+                headers: { 'Authorization': `Bearer ${token}` },
             });
 
-            if (response.ok) { // If response successful
-                const data = await response.json(); // Parse JSON for image data
-                if (data && data.imageData) { // If image data exists
-                    outputImage.src = `data:${data.mimeType};base64,${data.imageData}`; // Set image src
-                    outputImage.style.display = 'block'; // Show image
-                    fileInput.style.display = 'none'; // Hides the file input button
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.imageData && data.mimeType) {
+                    const imageUrl = `data:${data.mimeType};base64,${data.imageData}`;
+                    localStorage.setItem('uploadedImage', imageUrl); // Store in local storage
+                    redrawCanvas(); // Draw on canvas
+                    fileInput.style.display = 'none';
                 } else {
-                    outputImage.style.display = 'none'; // Hide image
-                    outputImage.src = ''; // Clear image src
+                    calibrationCanvas.style.display = 'none';
+                    calibrationCanvas.removeEventListener('click', handleCanvasClick);
+                    point1 = null;
+                    point2 = null;
+                    pixelDistance = null;
+                    calibrationFactor = null;
+                    calibrationInfo.textContent = '';
+                    localStorage.removeItem('uploadedImage');
                 }
             } else {
-                console.error('Error loading image:', response.statusText); // Log errors
+                console.error('Error loading image:', response.statusText);
             }
         } catch (error) {
-            console.error('Error loading image:', error); // Log errors
+            console.error('Error loading image:', error);
         }
+    } else {
+        localStorage.removeItem('uploadedImage');
+        redrawCanvas(); // Ensure canvas is cleared if no token
     }
 }
 
@@ -184,146 +321,9 @@ async function loadImage() {
 registerButton.addEventListener('click', register);
 loginButton.addEventListener('click', login);
 logoutButton.addEventListener('click', logout);
+calibrateButton.addEventListener('click', calibrateImage);
 
 // Initial UI Update
-updateUI(); // Update UI when page loads
+updateUI();
 loadImage(); // Load saved image when page loads
-
-// calibration panel
-document.addEventListener('DOMContentLoaded', () => {
-    const fileUpload = document.getElementById('fileUpload'); //Reassign to the canvas functionality
-    const imageCanvas = document.getElementById('imageCanvas');
-    const ctx = imageCanvas.getContext('2d'); // Get the canvas context
-    const scalingFactorInput = document.getElementById('scalingFactor');
-    const x1Input = document.getElementById('x1');
-    const y1Input = document.getElementById('y1');
-    const x2Input = document.getElementById('x2');
-    const y2Input = document.getElementById('y2');
-    const realDistanceInput = document.getElementById('realDistance');
-    const applyCalibrationButton = document.getElementById('applyCalibration');
-    const resetCalibrationButton = document.getElementById('resetCalibration');
-    const detectMicronBarButton = document.getElementById('detectMicronBar');
-    const calibrationStatus = document.getElementById('calibrationStatus');
-
-    let img = new Image(); // Create a new Image object
-    let imageLoaded = false;
-    let point1 = null;
-    let point2 = null;
-    let pixelToRealRatio = null;
-    let originalImageBase64 = null; // Store the original image data
-
-    // Load image and display it on the canvas
-    fileUpload.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                img.onload = () => {
-                    imageCanvas.style.display = 'block';
-                    outputImage.style.display = 'none'; // Hide the img tag
-                    imageCanvas.width = img.width;
-                    imageCanvas.height = img.height;
-                    ctx.drawImage(img, 0, 0, img.width, img.height);
-                    imageLoaded = true;
-
-                    // Store the original image data as a base64 string
-                    originalImageBase64 = imageCanvas.toDataURL();
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Function to draw a circle on the canvas
-    function drawCircle(x, y) {
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, 2 * Math.PI);
-        ctx.fillStyle = 'red';
-        ctx.fill();
-    }
-
-    // Handle canvas clicks for point selection
-    imageCanvas.addEventListener('click', (event) => {
-        if (!imageLoaded) {
-            alert('Please upload an image first.');
-            return;
-        }
-
-        const x = event.offsetX;
-        const y = event.offsetY;
-
-        if (!point1) {
-            point1 = { x, y };
-            x1Input.value = x;
-            y1Input.value = y;
-            drawCircle(x, y);
-        } else if (!point2) {
-            point2 = { x, y };
-            x2Input.value = x;
-            y2Input.value = y;
-            drawCircle(x, y);
-        }
-    });
-
-    // Apply Calibration
-    applyCalibrationButton.addEventListener('click', () => {
-        if (!point1 || !point2) {
-            calibrationStatus.textContent = 'Please select two calibration points.';
-            return;
-        }
-
-        const realDistance = parseFloat(realDistanceInput.value);
-        if (isNaN(realDistance)) {
-            calibrationStatus.textContent = 'Please enter a valid real-world distance.';
-            return;
-        }
-
-        const pixelDistance = Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
-        pixelToRealRatio = realDistance / pixelDistance;
-
-        const scalingFactor = parseFloat(scalingFactorInput.value);
-        if (!isNaN(scalingFactor)) {
-            // Reset transform
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.scale(scalingFactor, scalingFactor);
-
-            // Clear canvas and redraw image
-            ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
-            ctx.drawImage(img, 0, 0, img.width, img.height);
-
-            //Redraw the circles after scaling
-            drawCircle(point1.x, point1.y);
-            drawCircle(point2.x, point2.y);
-        }
-
-        calibrationStatus.textContent = `Calibration applied. Pixel to real-world ratio: ${pixelToRealRatio.toFixed(4)}`;
-    });
-
-    // Reset Calibration
-    resetCalibrationButton.addEventListener('click', () => {
-        point1 = null;
-        point2 = null;
-        pixelToRealRatio = null;
-
-        x1Input.value = '';
-        y1Input.value = '';
-        x2Input.value = '';
-        y2Input.value = '';
-        realDistanceInput.value = '';
-        scalingFactorInput.value = '';
-        calibrationStatus.textContent = '';
-
-        // Reset transform
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-        // Clear canvas and redraw the original image
-        ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
-        ctx.drawImage(img, 0, 0, img.width, img.height);
-    });
-
-    // Detect Micron Bar (Placeholder)
-    detectMicronBarButton.addEventListener('click', () => {
-        alert('Micron bar detection not implemented yet.');
-    });
-});
+setupCalibrationCanvas(); // Initial setup

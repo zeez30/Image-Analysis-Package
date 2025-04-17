@@ -18,21 +18,37 @@ function verifyToken(req, res, next) {
     });
 }
 
-// Save Image
+// Save/Update Image
 router.post('/', verifyToken, async (req, res) => {
     try {
         const {imageData, mimeType, filename, size} = req.body;
-        const image = new Image({
-            userId: req.userId,
-            imageData,
-            mimeType,
-            originalFilename: filename,
-            size,
-        });
-        await image.save();
-        res.status(201).json({ message: 'Image saved successfully' });
+        const userId = req.userId;
+
+        // Find if image already exists for user
+        const existingImage = await Image.findOne({ userId });
+
+        if (existingImage) {
+            // If image exists, update it
+            existingImage.imageData = imageData;
+            existingImage.mimeType = mimeType;
+            existingImage.originalFileName = filename;
+            existingImage.size = size;
+            await existingImage.save();
+            res.status(200).json({ message: 'Image updated successfully' });
+        } else {
+            // If no image exists, create a new one
+            const image = new Image({
+                userId,
+                imageData,
+                mimeType,
+                originalFileName: filename,
+                size,
+            });
+            await image.save();
+            res.status(201).json({ message: 'Image saved successfully' });
+        }
     } catch (error) {
-        res.status(500).json({ message: 'Error saving image', error: error.message });
+        res.status(500).json({ message: 'Error saving/updating image', error: error.message });
     }
 });
 
