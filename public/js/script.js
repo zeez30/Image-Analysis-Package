@@ -21,6 +21,27 @@ let point2 = null;
 let pixelDistance = null;
 let calibrationFactor = null; // Real-world units per pixel
 
+// Event listener to check if user has selected file
+fileInput.addEventListener("change", async () => {
+    let [file] = fileInput.files;
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            localStorage.setItem('uploadedImage', e.target.result); // Store image data in local storage
+            redrawCanvas(); // Draw the image on the canvas
+            fileInput.style.display = 'none'; // Hide the file input button
+        }
+
+        reader.onerror = (err) => {
+            console.error("Error reading file:", err);
+            alert("An error occurred while reading the file");
+        }
+
+        reader.readAsDataURL(file);
+    }
+});
+
 function drawPoint(point, color) {
     if (point && ctx) {
         ctx.beginPath();
@@ -48,25 +69,7 @@ function handleCanvasClick(event) {
         point2 = { x: adjustedX, y: adjustedY };
         drawPoint(point2, 'blue');
     }
-}
 
-function resetPoints() {
-    point1 = null;
-    point2 = null;
-    pixelDistance = null;
-    calibrationFactor = null;
-    calibrationInfo.textContent = '';
-    redrawCanvas();
-}
-
-function calculatePixelDistance() {
-    if (point1 && point2) {
-        const dx = point2.x - point1.x;
-        const dy = point2.y - point1.y;
-        pixelDistance = Math.sqrt(dx * dx + dy * dy);
-        return pixelDistance;
-    }
-    return null;
 }
 
 function calibrateImage() {
@@ -95,6 +98,25 @@ function calibrateImage() {
     }
 }
 
+function resetPoints() {
+    point1 = null;
+    point2 = null;
+    pixelDistance = null;
+    calibrationFactor = null;
+    calibrationInfo.textContent = '';
+    redrawCanvas();
+}
+
+function calculatePixelDistance() {
+    if (point1 && point2) {
+        const dx = point2.x - point1.x;
+        const dy = point2.y - point1.y;
+        pixelDistance = Math.sqrt(dx * dx + dy * dy);
+        return pixelDistance;
+    }
+    return null;
+}
+
 function redrawCanvas() {
     const storedImage = localStorage.getItem('uploadedImage');
     if (storedImage) {
@@ -119,27 +141,6 @@ function redrawCanvas() {
         calibrationInfo.textContent = '';
     }
 }
-
-// Event listener to check if user has selected file
-fileInput.addEventListener("change", async () => {
-    let [file] = fileInput.files;
-
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            localStorage.setItem('uploadedImage', e.target.result); // Store image data in local storage
-            redrawCanvas(); // Draw the image on the canvas
-            fileInput.style.display = 'none'; // Hide the file input button
-        }
-
-        reader.onerror = (err) => {
-            console.error("Error reading file:", err);
-            alert("An error occurred while reading the file");
-        }
-
-        reader.readAsDataURL(file);
-    }
-});
 
 function setupCalibrationCanvas() {
     redrawCanvas(); // Call redrawCanvas to handle initial setup or image change
