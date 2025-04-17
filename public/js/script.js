@@ -117,7 +117,7 @@ function calibrateImage() {
             calibrationFactor = knownDistance / pixelDistance; // Units per pixel
             calibrationInfo.textContent = `Calibration Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`;
             alert(`Calibration successful! Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`);
-            // You can now store this calibrationFactor and units for grain analysis.
+            // Note: Store calibrationFactor and units for grain analysis
             localStorage.setItem('calibrationFactor', calibrationFactor);
             localStorage.setItem('calibrationUnits', units);
         } else {
@@ -321,7 +321,7 @@ async function loadImage() {
 registerButton.addEventListener('click', register);
 loginButton.addEventListener('click', login);
 logoutButton.addEventListener('click', logout);
-outputImage.addEventListener('load', setupCalibrationCanvas); // Ensure canvas is set up after image loads (initially)
+outputImage.addEventListener('load', setupCalibrationCanvas); // Setup canvas after image loads
 calibrateButton.addEventListener('click', calibrateImage);
 
 // Initial UI Update
