@@ -1,3 +1,10 @@
+// Button Functionality
+const loadButton = document.getElementById('loadButton');
+
+loadButton.addEventListener('click', (e) => {
+    fileInput.click();
+})
+
 // Image Uploader
 const fileInput = document.querySelector('#fileUpload');
 const imageUploaderOutput = document.getElementById('outputImage');
@@ -268,7 +275,7 @@ fileUpload.addEventListener('change', async (event) => {
 
             if (response.ok) { // If successful
                 alert('Image saved successfully!');
-                loadImage(); // Load saved image
+                // loadImage(); // Load saved image
             } else {
                 const data = await response.json(); // Parse JSON for error messages
                 alert(`Image save failed: ${data.message}`);
