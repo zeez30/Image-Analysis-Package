@@ -11,8 +11,6 @@ const calibrationCanvas = document.getElementById('calibrationCanvas');
 const ctx = calibrationCanvas.getContext('2d');
 
 // Calibration Elements
-const calibrationPanel = document.getElementById('calibrationPanel');
-const resetPointsButton = document.getElementById('resetPointsButton');
 const knownDistanceInput = document.getElementById('knownDistance');
 const unitsInput = document.getElementById('units');
 const calibrateButton = document.getElementById('calibrateButton');
