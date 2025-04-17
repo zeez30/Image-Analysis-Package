@@ -77,28 +77,29 @@
         </ul>
     </div>
 
-<!--    <div class="imageContainer">-->
-<!--        <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/tiff">-->
-<!--        <img id="outputImage" src="" alt="">-->
-<!--        <canvas id="calibrationCanvas" style="display: none; position: absolute; top: 0; left: 0;"></canvas>-->
-<!--    </div>-->
-
     <div class="imageContainer">
         <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/tiff">
         <canvas id="calibrationCanvas" style="display: none; position: absolute; top: 0; left: 0;"></canvas>
     </div>
 
     <div class="inputBox">
-        <div id="calibrationPanel">
-            <h3>Image Calibration</h3>
+        <div class="calibrationPanel">
+            <h3>Calibration</h3>
+
+            <h4>Calibration Points</h4>
             <p>Click on two distinct points on the image to define a known distance.</p>
             <p>Point 1 will be marked in red, and Point 2 in blue.</p>
-            <button id="resetPointsButton" onclick="resetPoints()">Reset Points</button><br><br>
-            <label for="knownDistance">Known Distance:</label>
-            <input type="number" id="knownDistance" placeholder="Enter known distance"><br><br>
+
+            <label for="knownDistance">Real-World Distance:</label>
+            <input type="number" id="knownDistance" placeholder="Distance in units">
+
             <label for="units">Units:</label>
-            <input type="text" id="units" placeholder="e.g., microns"><br><br>
-            <button id="calibrateButton">Calibrate</button>
+            <input type="text" id="units" placeholder="Units">
+
+            <button id="calibrateButton">Apply Calibration</button>
+            <button id="resetPointsButton" onclick="resetPoints()">Reset Calibration</button>
+
+            <label for="calibrationInfo">Scaling Factor:</label>
             <div id="calibrationInfo" style="margin-top: 10px;"></div>
         </div>
     </div>
