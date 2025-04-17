@@ -1,14 +1,18 @@
 // Button Functionality
 const loadButton = document.getElementById('loadButton');
+const saveButton = document.getElementById('saveButton');
 
 loadButton.addEventListener('click', (e) => {
     fileInput.click();
 })
 
+saveButton.addEventListener('click', saveImage);
+
 // Image Uploader
 const fileInput = document.querySelector('#fileUpload');
 const calibrationCanvas = document.getElementById('calibrationCanvas');
 const ctx = calibrationCanvas.getContext('2d');
+const fileUpload = document.getElementById('fileUpload');
 
 // Calibration Elements
 const knownDistanceInput = document.getElementById('knownDistance');
@@ -278,6 +282,41 @@ fileUpload.addEventListener('change', async (event) => {
 
     reader.readAsDataURL(file);
 });
+
+async function saveImage() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Please log in to save the image.');
+        return;
+    }
+
+    const imageDataURL = calibrationCanvas.toDataURL();
+    const base64Image = imageDataURL.split(',')[1];
+    const mimeType = imageDataURL.substring(imageDataURL.indexOf(":") + 1, imageDataURL.indexOf(";"));
+
+    try {
+        const response = await fetch('/api/images', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ imageData: base64Image, mimeType: mimeType }),
+        });
+
+        if (response.ok) {
+            alert('Current image saved successfully!');
+            loadImage(); // Reload the saved image to ensure consistency
+        } else {
+            const data = await response.json();
+            alert(`Image save failed: ${data.message}`);
+        }
+    } catch (error) {
+        console.error('Error saving image:', error);
+        alert('An error occurred while saving the image.');
+    }
+}
+
 
 async function loadImage() {
     const token = localStorage.getItem('token');
