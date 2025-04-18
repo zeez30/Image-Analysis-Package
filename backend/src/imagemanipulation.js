@@ -17,7 +17,7 @@ async function imageCrop(x, y, height, width) {
 }
 
 //Rotation function
-async function imageRotate() {
+async function imageRotate(degrees) {
     try {
         const image = await jimp.read(imagePath);
         image.rotate(degrees);
@@ -40,4 +40,4 @@ async function imageBrightness(brightness) {
     }
 }
 
-export {imageCrop, imageRotate, imageBrightness};
+module.exports = {imageCrop, imageRotate, imageBrightness};

@@ -81,9 +81,12 @@ export async function loadImage() {
     if (token) {
         try {
             const response = await fetch('/api/images', {
-                headers: { 'Authorization': `Bearer ${token}` },
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'content-type': 'application/json',
+                },
             });
-
             if (response.ok) {
                 const data = await response.json();
                 if (data && data.imageData && data.mimeType) {
