@@ -1,15 +1,18 @@
 const fs = require('fs');
 const path = require('path');
-const jimp = require('jimp')
-const imagePath = 'imagePath.png, imagePath.jpeg';
-const outputPath = 'outputPath.png, imagePath.jpeg';
+const {Jimp} = require('jimp')
 
 //Cropping function
-async function imageCrop(x, y, height, width) {
+async function imageCrop(x, y, height, width, inputPath, outputPath) {
     try {
-        const image = await jimp.read(imagePath);
-        image.crop(x, y, height, width);
-        await image.writeAsync(outputPath);
+        const image = await Jimp.read(inputPath);
+        const croppedImage = image.crop({
+            x: x,
+            y: y,
+            w: width,
+            h: height,
+        })
+        await croppedImage.write(outputPath);
         console.log(`Image Cropped to height:${height}, width: ${width} and save as ${outputPath}`);
     } catch (error) {
         console.error('Error Cropping the Image, please try again', error);

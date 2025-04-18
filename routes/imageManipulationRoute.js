@@ -1,57 +1,70 @@
 const express = require('express');
-const { imageCrop, imageRotate, imageBrightness } = require('../backend/src/imagemanipulation.js');
-// const path = require('path');
-
 const router = express.Router();
+const { imageCrop } = require('../backend/src/imagemanipulation');
+const fs = require('fs').promises;
+const path = require('path');
 
-//cropImage
 router.post('/cropImage', async (req, res) => {
-    try {
-        const { x, y, height, width, imagePath, outputPath } = req.body;
 
-        if (!x || !y || !height || !width || !imagePath || !outputPath) {
+    try {
+        const { x, y, height, width, imageData } = req.body;
+
+        if (!imageData || x === undefined || y === undefined || height === undefined || width === undefined) {
+            console.error('Missing required parameters in req.body:', req.body);
             return res.status(400).json({ error: 'Missing required parameters.' });
         }
 
-        await imageCrop(parseInt(x), parseInt(y), parseInt(height), parseInt(width), imagePath, outputPath);
-        res.json({ message: `Image cropped and saved to ${outputPath}` });
-    } catch (error) {
-        console.error('Error processing image crop request:', error);
-        res.status(500).json({ error: 'Failed to crop image.' });
-    }
-});
+        const parsedX = parseInt(x);
+        const parsedY = parseInt(y);
+        const parsedWidth = parseInt(width);
+        const parsedHeight = parseInt(height);
 
-// Rotation function route
-router.post('/rotateImage', async (req, res) => {
-    try {
-        const { degrees, imagePath, outputPath } = req.body;
+        const base64Data = imageData.split(',')[1];
+        const buffer = Buffer.from(base64Data, 'base64');
 
-        if (!degrees || !imagePath || !outputPath) {
-            return res.status(400).json({ error: 'Missing required parameters for rotation.' });
+        // Create temporary file paths
+        const tempDir = path.join(__dirname, 'temp'); // Create a 'temp' directory in the same directory as this route file
+        await fs.mkdir(tempDir, { recursive: true }); // Ensure the directory exists
+        const tempImagePath = path.join(tempDir, `temp_image_crop_${Date.now()}.png`);
+        const tempOutputPath = path.join(tempDir, `cropped_output_${Date.now()}.png`);
+
+        // Save the buffer to a temporary file
+        await fs.writeFile(tempImagePath, buffer);
+
+        // Call the imageCrop function
+        try {
+            await imageCrop(parsedX, parsedY, parsedHeight, parsedWidth, tempImagePath, tempOutputPath);
+        } catch (cropError) {
+            console.error('Error in imageCrop:', cropError);
+            return res.status(500).json({ error: 'Image cropping failed on the server.' });
         }
 
-        await imageRotate(parseInt(degrees), imagePath, outputPath);
-        res.json({ message: `Image rotated by ${degrees} degrees and saved to ${outputPath}` });
-    } catch (error) {
-        console.error('Error processing image rotation request:', error);
-        res.status(500).json({ error: 'Failed to rotate image.' });
-    }
-});
-
-// Image Brightness function route
-router.post('/adjustBrightness', async (req, res) => {
-    try {
-        const { brightness, imagePath, outputPath } = req.body;
-
-        if (brightness === undefined || !imagePath || !outputPath) {
-            return res.status(400).json({ error: 'Missing required parameters for brightness adjustment.' });
+        // After cropping, read the temporary output file and send it back
+        let croppedBuffer;
+        try {
+            croppedBuffer = await fs.readFile(tempOutputPath);
+        } catch (readError) {
+            console.error('Error reading cropped file:', readError);
+            return res.status(500).json({ error: 'Error reading the cropped image.' });
         }
 
-        await imageBrightness(parseFloat(brightness), imagePath, outputPath);
-        res.json({ message: `Image brightness adjusted by ${brightness} and saved to ${outputPath}` });
+        res.writeHead(200, {
+            'Content-Type': 'image/png', // Assuming PNG output from imageCrop
+            'Content-Length': croppedBuffer.length
+        });
+        res.end(croppedBuffer);
+
+        // Clean up temporary files
+        try {
+            await fs.unlink(tempImagePath);
+            await fs.unlink(tempOutputPath);
+        } catch (unlinkError) {
+            console.error('Error deleting temporary files:', unlinkError);
+        }
+
     } catch (error) {
-        console.error('Error processing image brightness request:', error);
-        res.status(500).json({ error: 'Failed to adjust image brightness.' });
+        console.error('Error processing crop request:', error);
+        res.status(500).json({ error: 'Failed to process image crop request.' });
     }
 });
 

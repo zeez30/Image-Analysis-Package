@@ -170,6 +170,50 @@ align-items: stretch;
     ul li button:hover {
         background-color: #f0f0f0;
     }
+
+    ul li.dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    ul li.dropdown .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 200px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        z-index: 2;
+        padding: 10px;
+        left: 0;
+    }
+
+    ul li.dropdown .dropdown-content label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.9em;
+    }
+
+    ul li.dropdown .dropdown-content input[type=number],
+    ul li.dropdown .dropdown-content input[type=text] {
+        width: calc(100% - 10px);
+        padding: 5px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    ul li.dropdown .dropdown-content button#performCrop {
+        padding: 8px 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9em;
+    }
+
+    ul li.dropdown .dropdown-content button#performCrop:hover {
+        background-color: #1e7e34;
+    }
 }
 
 /* Input Box (where the data is input) */
