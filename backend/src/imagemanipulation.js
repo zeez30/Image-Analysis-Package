@@ -39,3 +39,5 @@ async function imageBrightness(brightness) {
         console.error('Error Adjusting Image Brightness, please try again', error);
     }
 }
+
+export {imageCrop, imageRotate, imageBrightness};
