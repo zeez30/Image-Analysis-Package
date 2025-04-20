@@ -67,14 +67,19 @@
     </div>
 
 
-    <div class="outputBox">
-        <ul>
-            <li>Output 1</li>
-            <li>Output 2</li>
-            <li>Output 3</li>
-            <li>Output 4</li>
-            <li>Output 5</li>
-        </ul>
+    <div class="exportMenu">
+        <h3>Export Image</h3>
+        <label for="exportFormat">Format:</label>
+        <select id="exportFormat">
+            <option value="png">PNG (.png)</option>
+            <option value="jpeg">JPEG (.jpeg)</option>
+            <option value="tiff">TIFF (.tiff)</option>
+        </select>
+        <label for="exportScale">Scale:</label>
+        <input type="number" id="exportScale" value="1.0" step="0.1" min="0.1">
+        <label for="exportQuality" id="jpegQualityLabel" style="display: none;">Quality (0-1):</label>
+        <input type="range" id="exportQuality" min="0" max="1" step="0.01" value="0.9" style="display: none;">
+        <button id="downloadButton">Download</button>
     </div>
 
     <div class="imageContainer">

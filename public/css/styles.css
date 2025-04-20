@@ -172,6 +172,49 @@ align-items: stretch;
     }
 }
 
+/* Export Menu (Replaces the Output Box) */
+.exportMenu {
+    grid-area: 3 / 9 / 10 / 11;
+    border: 5px solid black;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.exportMenu h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.exportMenu label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.exportMenu select,
+.exportMenu input[type="number"],
+.exportMenu input[type="range"] {
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.exportMenu button {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.exportMenu button:hover {
+    background-color: #1e7e34;
+}
+
 /* Input Box (where the data is input) */
 .inputBox {
     grid-area: 3 / 1 / 10 / 3;
@@ -254,7 +297,7 @@ align-items: stretch;
     margin-bottom: 10px;
 }
 
-/* Output Box (where the data is output) */
+/* Output Box (where the data is output)
 .outputBox {
     grid-area: 3 / 9 / 10 / 11;
     border: 5px solid black;
@@ -276,7 +319,7 @@ align-items: stretch;
         padding: 10px;
         margin: 10px;
     }
-}
+}*/
 
 /* Image Container (where the imported image goes) */
 .imageContainer {
