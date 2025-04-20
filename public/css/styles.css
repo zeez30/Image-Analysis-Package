@@ -172,51 +172,44 @@ align-items: stretch;
     }
 }
 
-/* Export Menu (Replaces the Output Box) */
-.exportMenu {
+/* Output Box (where the data will be displayed and the button will go) */
+.outputBox {
     grid-area: 3 / 9 / 10 / 11;
     border: 5px solid black;
     display: flex;
     flex-direction: column;
-    padding: 15px; /* Use similar padding as inputBox */
+    padding: 15px;
 }
 
-.exportMenu h3 {
+.outputBox h3 {
     margin-top: 0;
-    margin-bottom: 10px; /* Use similar margin as inputBox */
-    text-align: left; /* Align heading with labels */
+    margin-bottom: 10px;
+    text-align: left;
 }
 
-.exportMenu label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    display: block; /* Make labels take full width */
-}
-
-.exportMenu select,
-.exportMenu input[type="number"],
-.exportMenu input[type="range"] {
-    padding: 8px;
-    margin-bottom: 10px; /* Use similar margin as inputBox inputs */
-    border: 1px solid #ccc;
+#exportedDataDisplay {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
     border-radius: 4px;
-    box-sizing: border-box; /* Ensure padding and border are inside the element's width */
-    width: 100%; /* Make them take full width */
+    font-size: 0.95em;
+    white-space: pre-wrap; /* Preserve formatting and handle long lines */
 }
 
-.exportMenu button {
+.outputBox button#exportDataButton {
     padding: 10px 15px;
-    background-color: #007bff; /* Use the primary button color */
+    background-color: #28a745; /* A different color to distinguish it */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: inherit;
-    margin-top: 10px; /* Add some space above the button */
+    align-self: flex-start; /* Align button to the left */
 }
 
-.exportMenu button:hover {
-    background-color: #0056b3; /* Use the primary button hover color */
+.outputBox button#exportDataButton:hover {
+    background-color: #1e7e34;
 }
 
 /* Input Box (where the data is input) */

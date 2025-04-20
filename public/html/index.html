@@ -66,20 +66,11 @@
         </ul>
     </div>
 
-
-    <div class="exportMenu">
-        <h3>Export Image</h3>
-        <label for="exportFormat">Format:</label>
-        <select id="exportFormat">
-            <option value="png">PNG (.png)</option>
-            <option value="jpeg">JPEG (.jpeg)</option>
-            <option value="tiff">TIFF (.tiff)</option>
-        </select>
-        <label for="exportScale">Scale:</label>
-        <input type="number" id="exportScale" value="1.0" step="0.1" min="0.1">
-        <label for="exportQuality" id="jpegQualityLabel" style="display: none;">Quality (0-1):</label>
-        <input type="range" id="exportQuality" min="0" max="1" step="0.01" value="0.9" style="display: none;">
-        <button id="downloadButton">Download</button>
+    <div class="outputBox">
+        <h3>Exported Data</h3>
+        <div id="exportedDataDisplay">
+        </div>
+        <button id="exportDataButton" style="margin-top: 10px; display: none;">Download Data (.csv)</button>
     </div>
 
     <div class="imageContainer">
@@ -90,7 +81,6 @@
     <div class="inputBox">
         <div class="calibrationPanel">
             <h3>Calibration</h3>
-
             <h4>Calibration Points</h4>
             <p>Click on two distinct points on the image to define a known distance.</p>
             <p>Point 1 will be marked in red, and Point 2 in blue.</p>
