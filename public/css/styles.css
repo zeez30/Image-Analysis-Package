@@ -178,41 +178,45 @@ align-items: stretch;
     border: 5px solid black;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 15px; /* Use similar padding as inputBox */
 }
 
 .exportMenu h3 {
     margin-top: 0;
-    margin-bottom: 15px;
-    text-align: center;
+    margin-bottom: 10px; /* Use similar margin as inputBox */
+    text-align: left; /* Align heading with labels */
 }
 
 .exportMenu label {
     margin-bottom: 5px;
     font-weight: bold;
+    display: block; /* Make labels take full width */
 }
 
 .exportMenu select,
 .exportMenu input[type="number"],
 .exportMenu input[type="range"] {
     padding: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Use similar margin as inputBox inputs */
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box; /* Ensure padding and border are inside the element's width */
+    width: 100%; /* Make them take full width */
 }
 
 .exportMenu button {
     padding: 10px 15px;
-    background-color: #28a745;
+    background-color: #007bff; /* Use the primary button color */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: inherit;
+    margin-top: 10px; /* Add some space above the button */
 }
 
 .exportMenu button:hover {
-    background-color: #1e7e34;
+    background-color: #0056b3; /* Use the primary button hover color */
 }
 
 /* Input Box (where the data is input) */
