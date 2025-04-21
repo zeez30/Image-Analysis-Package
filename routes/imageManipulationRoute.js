@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { imageCrop } = require('../backend/src/imagemanipulation');
+const { imageCrop, imageRotate, imageBrightness } = require('../backend/src/imagemanipulation');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -55,6 +55,51 @@ router.post('/cropImage', async (req, res) => {
     } catch (error) {
         console.error('Error processing crop request:', error);
         res.status(500).json({ error: 'Failed to process image crop request.' });
+    }
+});
+
+router.post('/rotateImage', async (req, res) => {
+    // console.log('Hit the /rotateImage route! Body:', req.body);
+
+    try {
+        const { degrees, imageData } = req.body;
+        const parsedDegrees = parseInt(degrees);
+
+        if (isNaN(parsedDegrees) || !imageData) {
+            return res.status(400).json({ error: 'Missing or invalid parameters for rotation.' });
+        }
+
+        const base64Data = imageData.split(',')[1];
+        const buffer = Buffer.from(base64Data, 'base64');
+
+        const tempDir = path.join(__dirname, 'temp');
+        await fs.mkdir(tempDir, { recursive: true });
+        const tempImagePath = path.join(tempDir, `temp_image_rotate_${Date.now()}.png`);
+        await fs.writeFile(tempImagePath, buffer);
+
+        let rotatedBuffer;
+        try {
+            rotatedBuffer = await imageRotate(parsedDegrees, tempImagePath);
+        } catch (rotateError) {
+            console.error('Error in imageRotate:', rotateError);
+            return res.status(500).json({ error: 'Image rotation failed on the server.' });
+        }
+
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': rotatedBuffer.length
+        });
+        res.end(rotatedBuffer);
+
+        try {
+            await fs.unlink(tempImagePath);
+        } catch (unlinkError) {
+            console.error('Error deleting temporary file:', unlinkError);
+        }
+
+    } catch (error) {
+        console.error('Error processing rotation request:', error);
+        res.status(500).json({ error: 'Failed to process image rotation request.' });
     }
 });
 

@@ -22,14 +22,16 @@ async function imageCrop(x, y, height, width, inputPath) {
 }
 
 //Rotation function
-async function imageRotate(degrees) {
+async function imageRotate(degrees, inputPath) {
     try {
-        const image = await jimp.read(imagePath);
+        const image = await Jimp.read(inputPath);
         image.rotate(degrees);
-        await image.writeAsync(outputPath);
-        console.log(`Image Rotated: ${degrees} and Saved As ${outputPath}`);
+        const rotatedBuffer = await image.getBuffer('image/png');
+        console.log(`Image Rotated ${degrees} degrees`);
+        return rotatedBuffer;
     } catch (error) {
         console.error('Error Rotating the Image, please try again', error);
+        throw error;
     }
 }
 
