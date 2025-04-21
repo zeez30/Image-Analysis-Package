@@ -1,3 +1,4 @@
+export let originalImageDataURL = null; // Export the variable
 
 export function redrawCanvas() {
     const storedImage = localStorage.getItem('uploadedImage');
@@ -12,6 +13,7 @@ export function redrawCanvas() {
             calibrationCanvas.width = img.naturalWidth;
             calibrationCanvas.height = img.naturalHeight;
             ctx.drawImage(img, 0, 0, calibrationCanvas.width, calibrationCanvas.height);
+            originalImageDataURL = calibrationCanvas.toDataURL('image/png'); // Store original here
             import('./calibration.js').then(module => {
                 if (module.point1) module.drawPoint(module.point1, 'red');
                 if (module.point2) module.drawPoint(module.point2, 'blue');
@@ -27,5 +29,6 @@ export function redrawCanvas() {
             module.point1 = null;
             module.point2 = null;
         });
+        originalImageDataURL = null; // Clear original data if no image
     }
 }

@@ -87,7 +87,14 @@
                     <button id="rotateRight">Rotate Right 90°</button>
                 </div>
             </li>
-            <li><button id="brightnessButton">Brightness</button></li>
+            <li class="dropdown" id="brightnessDropdownContainer">
+                <button id="brightnessButton">Brightness</button>
+                <div class="dropdown-content" id="brightnessDropdownContent">
+                    <label for="brightnessSlider">Brightness:</label>
+                    <input type="range" id="brightnessSlider" min="-1" max="1" step="0.1" value="0">
+                    <span id="brightnessValue">0.0</span>
+                </div>
+            </li>
             <li><button>Tool 4</button></li>
             <li><button>Tool 5</button></li>
         </ul>

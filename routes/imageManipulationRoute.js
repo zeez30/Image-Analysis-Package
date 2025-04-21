@@ -5,7 +5,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 router.post('/cropImage', async (req, res) => {
-    console.log('Hit the /cropImage route! Body:', req.body);
+    // console.log('Hit the /cropImage route! Body:', req.body);
 
     try {
         const { x, y, height, width, imageData } = req.body;
@@ -40,7 +40,7 @@ router.post('/cropImage', async (req, res) => {
         }
 
         res.writeHead(200, {
-            'Content-Type': 'image/png', // Send back as PNG
+            'Content-Type': 'image/png',
             'Content-Length': croppedBuffer.length
         });
         res.end(croppedBuffer);
@@ -100,6 +100,53 @@ router.post('/rotateImage', async (req, res) => {
     } catch (error) {
         console.error('Error processing rotation request:', error);
         res.status(500).json({ error: 'Failed to process image rotation request.' });
+    }
+});
+
+router.post('/adjustBrightness', async (req, res) => {
+    // console.log('Hit the /adjustBrightness route! Body:', req.body);
+
+    try {
+        const { brightness, imageData } = req.body;
+        const parsedBrightness = parseFloat(brightness);
+
+        // console.log('Received brightness value:', parsedBrightness);
+
+        if (isNaN(parsedBrightness) || imageData === undefined) {
+            return res.status(400).json({ error: 'Missing or invalid parameters for brightness adjustment.' });
+        }
+
+        const base64Data = imageData.split(',')[1];
+        const buffer = Buffer.from(base64Data, 'base64');
+
+        const tempDir = path.join(__dirname, 'temp');
+        await fs.mkdir(tempDir, { recursive: true });
+        const tempImagePath = path.join(tempDir, `temp_image_brightness_${Date.now()}.png`);
+        await fs.writeFile(tempImagePath, buffer);
+
+        let adjustedBuffer;
+        try {
+            adjustedBuffer = await imageBrightness(parsedBrightness, tempImagePath);
+        } catch (brightnessError) {
+            console.error('Error in imageBrightness:', brightnessError);
+            return res.status(500).json({ error: 'Brightness adjustment failed on the server.' });
+        }
+
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': adjustedBuffer.length
+        });
+        res.end(adjustedBuffer);
+
+        try {
+            await fs.unlink(tempImagePath);
+        } catch (unlinkError) {
+            console.error('Error deleting temporary file:', unlinkError);
+        }
+
+    } catch (error) {
+        console.error('Error processing brightness request:', error);
+        res.status(500).json({ error: 'Failed to process brightness adjustment request.' });
     }
 });
 

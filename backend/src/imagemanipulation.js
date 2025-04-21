@@ -36,14 +36,16 @@ async function imageRotate(degrees, inputPath) {
 }
 
 //Image Brightness function
-async function imageBrightness(brightness) {
+async function imageBrightness(brightness, inputPath) {
     try {
-        const image = await jimp.read(imagePath);
-        image.brightness(brightness);
-        await image.writeAsync(outputPath);
-        console.log(`Image brightness adjusted by ${brightness} and saved as ${outputPath}`);
+        const image = await Jimp.read(inputPath);
+        let totalBrightness = (brightness + 1);
+        image.brightness(totalBrightness);
+
+        return await image.getBuffer('image/png');
     } catch (error) {
         console.error('Error Adjusting Image Brightness, please try again', error);
+        throw error;
     }
 }
 
