@@ -1,41 +1,52 @@
 const fs = require('fs');
 const path = require('path');
-const jimp = require('jimp')
-const imagePath = 'imagePath.png, imagePath.jpeg';
-const outputPath = 'outputPath.png, imagePath.jpeg';
+const {Jimp} = require('jimp')
 
 //Cropping function
-async function imageCrop(x, y, height, width) {
+async function imageCrop(x, y, height, width, inputPath) {
     try {
-        const image = await jimp.read(imagePath);
-        image.crop(x, y, height, width);
-        await image.writeAsync(outputPath);
-        console.log(`Image Cropped to height:${height}, width: ${width} and save as ${outputPath}`);
+        const image = await Jimp.read(inputPath);
+        const croppedImage = image.crop({
+            x: x,
+            y: y,
+            w: width,
+            h: height,
+        });
+        const croppedBuffer = await croppedImage.getBuffer('image/png'); // Get the buffer
+        console.log(`Image Cropped to height:${height}, width: ${width}`);
+        return croppedBuffer; // Return the buffer
     } catch (error) {
         console.error('Error Cropping the Image, please try again', error);
+        throw error;
     }
 }
 
 //Rotation function
-async function imageRotate() {
+async function imageRotate(degrees, inputPath) {
     try {
-        const image = await jimp.read(imagePath);
+        const image = await Jimp.read(inputPath);
         image.rotate(degrees);
-        await image.writeAsync(outputPath);
-        console.log(`Image Rotated: ${degrees} and Saved As ${outputPath}`);
+        const rotatedBuffer = await image.getBuffer('image/png');
+        console.log(`Image Rotated ${degrees} degrees`);
+        return rotatedBuffer;
     } catch (error) {
         console.error('Error Rotating the Image, please try again', error);
+        throw error;
     }
 }
 
 //Image Brightness function
-async function imageBrightness(brightness) {
+async function imageBrightness(brightness, inputPath) {
     try {
-        const image = await jimp.read(imagePath);
-        image.brightness(brightness);
-        await image.writeAsync(outputPath);
-        console.log(`Image brightness adjusted by ${brightness} and saved as ${outputPath}`);
+        const image = await Jimp.read(inputPath);
+        let totalBrightness = (brightness + 1);
+        image.brightness(totalBrightness);
+
+        return await image.getBuffer('image/png');
     } catch (error) {
         console.error('Error Adjusting Image Brightness, please try again', error);
+        throw error;
     }
 }
+
+module.exports = {imageCrop, imageRotate, imageBrightness};
