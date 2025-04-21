@@ -81,18 +81,20 @@ performCropButton.addEventListener('click', async (e) => {
         });
 
         if (response.ok) {
-            const blob = await response.blob(); // Get the response as a Blob
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'cropped_image.png'; // Set the default download filename
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
+            const croppedBlob = await response.blob();
+            const croppedImageURL = URL.createObjectURL(croppedBlob);
 
-            console.log('Image cropping and download successful!');
-            cropDropdownContent.style.display = 'none';
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(croppedImageURL); // Clean up the URL
+                cropDropdownContent.style.display = 'none';
+                console.log('Image cropping and upload to canvas successful!');
+            };
+            img.src = croppedImageURL;
         } else {
             const errorData = await response.json();
             console.error('Image cropping failed:', errorData.error || 'Unknown error');
