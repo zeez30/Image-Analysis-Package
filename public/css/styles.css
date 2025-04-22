@@ -216,6 +216,47 @@ align-items: stretch;
     }
 }
 
+/* Output Box (where the data will be displayed and the button will go) */
+.outputBox {
+    grid-area: 3 / 9 / 10 / 11;
+    border: 5px solid black;
+    display: flex;
+    flex-direction: column;
+    padding: 10px; /* Use similar padding as inputBox */
+}
+
+.outputBox h3 {
+    margin-top: 0;
+    margin-bottom: 10px; /* Use similar margin as inputBox */
+    text-align: left; /* Align heading with labels in inputBox */
+}
+
+#exportedDataDisplay {
+    margin-bottom: 10px;
+    padding: 8px; /* Use similar padding as inputBox inputs */
+    border: 1px solid #ccc; /* Use the same border style as inputBox inputs */
+    background-color: #f9f9f9; /* Same background as calibrationInfo */
+    border-radius: 4px; /* Same border-radius as inputBox inputs */
+    font-size: 0.95em; /* Slightly smaller font size */
+    white-space: pre-wrap;
+}
+
+.outputBox button#exportDataButton {
+    padding: 10px 15px;
+    background-color: #007bff; /* Use the primary button color */
+    color: white;
+    border: none;
+    border-radius: 5px; /* Same border-radius as other buttons */
+    cursor: pointer;
+    font-size: inherit;
+    align-self: flex-start;
+    margin-top: 10px; /* Add some space above the button */
+}
+
+.outputBox button#exportDataButton:hover {
+    background-color: #0056b3; /* Use the primary button hover color */
+}
+
 /* Input Box (where the data is input) */
 .inputBox {
     grid-area: 3 / 1 / 10 / 3;
@@ -298,7 +339,7 @@ align-items: stretch;
     margin-bottom: 10px;
 }
 
-/* Output Box (where the data is output) */
+/* Output Box (where the data is output)
 .outputBox {
     grid-area: 3 / 9 / 10 / 11;
     border: 5px solid black;
@@ -320,7 +361,7 @@ align-items: stretch;
         padding: 10px;
         margin: 10px;
     }
-}
+}*/
 
 /* Image Container (where the imported image goes) */
 .imageContainer {
