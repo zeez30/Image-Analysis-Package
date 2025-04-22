@@ -17,8 +17,7 @@
             <li class="dropdown">
                 File
                 <div class="dropdown-content">
-                    <a href="#">Save</a>
-                    <a href="#">Save As</a>
+                    <a href="#" id="saveButton">Save</a>
                     <a href="#" id="loadButton">Load</a>
                     <a href="#">Export</a>
                 </div>
@@ -58,9 +57,44 @@
 
     <div class="toolbar">
         <ul>
-            <li><button>Tool 1</button></li>
-            <li><button>Tool 2</button></li>
-            <li><button>Tool 3</button></li>
+            <li class="dropdown" id="cropDropdownContainer">
+                <button id="cropButton">Crop</button>
+                <div class="dropdown-content" id="cropDropdownContent">
+                    <p><strong>Image Dimensions:</strong></p>
+                    <div id="currentImageWidth">Width: -</div>
+                    <div id="currentImageHeight">Height: -</div>
+                    <br>
+
+                    <label for="cropX">X:</label>
+                    <input type="number" id="cropX" placeholder="X Coordinate"><br>
+
+                    <label for="cropY">Y:</label>
+                    <input type="number" id="cropY" placeholder="Y Coordinate"><br>
+
+                    <label for="cropHeight">Height:</label>
+                    <input type="number" id="cropHeight" placeholder="Height"><br>
+
+                    <label for="cropWidth">Width:</label>
+                    <input type="number" id="cropWidth" placeholder="Width"><br>
+
+                    <button id="performCrop">Perform Crop</button>
+                </div>
+            </li>
+            <li class="dropdown" id="rotateDropdownContainer">
+                <button id="rotateButton">Rotate</button>
+                <div class="dropdown-content" id="rotateDropdownContent">
+                    <button id="rotateLeft">Rotate Left 90°</button>
+                    <button id="rotateRight">Rotate Right 90°</button>
+                </div>
+            </li>
+            <li class="dropdown" id="brightnessDropdownContainer">
+                <button id="brightnessButton">Brightness</button>
+                <div class="dropdown-content" id="brightnessDropdownContent">
+                    <label for="brightnessSlider">Brightness:</label>
+                    <input type="range" id="brightnessSlider" min="-1" max="1" step="0.1" value="0">
+                    <span id="brightnessValue">0.0</span>
+                </div>
+            </li>
             <li><button>Tool 4</button></li>
             <li><button>Tool 5</button></li>
         </ul>
@@ -72,11 +106,6 @@
         </div>
         <button id="exportDataButton" style="margin-top: 10px;">Download Data (.csv)</button>    </div>
 
-    <div class="imageContainer">
-        <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/tiff">
-        <canvas id="calibrationCanvas" style="display: none; position: absolute; top: 0; left: 0;"></canvas>
-    </div>
-
     <div class="inputBox">
         <div class="calibrationPanel">
             <h3>Calibration</h3>
@@ -84,20 +113,23 @@
             <p>Click on two distinct points on the image to define a known distance.</p>
             <p>Point 1 will be marked in red, and Point 2 in blue.</p>
 
-            <label for="knownDistance">Real-World Distance:</label>
             <input type="number" id="knownDistance" placeholder="Distance in units">
 
-            <label for="units">Units:</label>
             <input type="text" id="units" placeholder="Units">
 
             <button id="calibrateButton">Apply Calibration</button>
-            <button id="resetPointsButton" onclick="resetPoints()">Reset Calibration</button>
+            <button id="resetPointsButton">Reset Calibration</button>
 
-            <label for="calibrationInfo">Scaling Factor:</label>
+            <h4>Scaling Factor:</h4>
             <div id="calibrationInfo" style="margin-top: 10px;"></div>
         </div>
     </div>
+
+    <div class="imageContainer">
+        <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/tiff">
+        <canvas id="calibrationCanvas" style="display: none; position: absolute; top: 0; left: 0;"></canvas>
+    </div>
 </div>
 </body>
-<script src="../js/script.js"></script>
+<script type="module" src="../js/script.js"></script>
 </html>

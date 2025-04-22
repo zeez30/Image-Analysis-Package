@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 
 const authRoutes = require('./routes/auth');
 const imageRoutes = require('./routes/image');
+const imageManipulationRoute = require('./routes/imageManipulationRoute');
 
 const app = express();
 const port = 3000;
@@ -26,6 +27,7 @@ mongoose.connect('mongodb+srv://administrator:uMi56bBlMpbOk2IN@imageanalysis.ne3
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/images', imageRoutes);
+app.use('/api/manipulate', imageManipulationRoute);
 
 // Serve index.html
 app.get('/', (req, res) => {
