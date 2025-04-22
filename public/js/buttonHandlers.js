@@ -2,6 +2,8 @@ import { saveImage } from './imageSaveLoad.js';
 import { fileInput } from './imageUpload.js';
 import { calibrationCanvas } from './calibration.js';
 import { originalImageDataURL } from './imageUtils.js';
+import { fetchExportedData, downloadCSV, exportDataButton } from './dataExport.js';
+//NOTE: Need to implement API route and file to connect with backend once functional
 
 // Button Elements
 const loadButton = document.getElementById('loadButton');
