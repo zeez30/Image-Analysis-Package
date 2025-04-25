@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Image Analysis Tool</title>
+    <style>
+    </style>
+</head>
+<body>
+
+<div id="guiContainer">
+    <input type="file" id="imageLoader" name="imageLoader">
+    <button id="lineToolButton">Line</button>
+    <button id="ellipseToolButton">Ellipse</button>
+    <button id="exportButton">Export to CSV</button>
+    <canvas id="imageCanvas"></canvas>
+
+</div>
+
+<div id="overlay"></div>
+<div id="scalePopup">
+    <h2>Set Scale</h2>
+    <label for="distanceInPixels">Distance in Pixels:</label>
+    <input type="text" id="distanceInPixels" readonly>
+
+    <label for="knownDistance">Known Distance:</label>
+    <input type="text" id="knownDistance">
+
+    <label for="pixelAspectRatio">Pixel aspect ratio:</label>
+    <input type="text" id="pixelAspectRatio" value="1.0">
+
+    <label for="units">Unit of length:</label>
+    <input type="text" id="units">
+
+    <button onclick="getScaleInput()">Set Scale</button>
+</div>
+
+<div id="resultsTableContainer">
+    <h2>Measurements</h2>
+    <table id="measurementsTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Length</th>
+            <th>Area</th>
+            <th>Grain Size</th>
+            <th>Unit</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const imageLoader = document.getElementById('imageLoader');
+    const imageCanvas = document.getElementById('imageCanvas');
+    const ctx = imageCanvas.getContext('2d');
+    const scalePopup = document.getElementById('scalePopup');
+    const overlay = document.getElementById('overlay');
+    const distanceInPixelsInput = document.getElementById('distanceInPixels');
+    const knownDistanceInput = document.getElementById('knownDistance');
+    const pixelAspectRatioInput = document.getElementById('pixelAspectRatio');
+    const unitsInput = document.getElementById('units');
+    const lineToolButton = document.getElementById('lineToolButton');
+    const ellipseToolButton = document.getElementById('ellipseToolButton');
+    const measurementsTableBody = document.querySelector('#measurementsTable tbody');
+    const exportButton = document.getElementById('exportButton');
+
+    let img = new Image();
+    let imageScale = null;
+    let currentTool = 'line';
+    let drawing = false;
+    let startX, startY;
+    let endX, endY;
+    let drawnShapes = [];
+    let shapeCounter = 0;
+
+    imageLoader.addEventListener('change', handleImage, false);
+    lineToolButton.addEventListener('click', () => currentTool = 'line');
+    ellipseToolButton.addEventListener('click', () => currentTool = 'ellipse');
+
+    function handleImage(e) {
+        const reader = new FileReader();
+        reader.onload = function(event){
+            img.onload = function(){
+                imageCanvas.width = img.width;
+                imageCanvas.height = img.height;
+                redrawCanvas();
+            }
+            img.src = event.target.result;
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    imageCanvas.addEventListener('mousedown', startDrawing);
+    imageCanvas.addEventListener('mousemove', trackDrawing);
+    imageCanvas.addEventListener('mouseup', endDrawing);
+    imageCanvas.addEventListener('mouseout', stopDrawing);
+
+    function startDrawing(e) {
+        drawing = true;
+        startX = e.offsetX;
+        startY = e.offsetY;
+    }
+
+    function trackDrawing(e) {
+        if (!drawing) return;
+        endX = e.offsetX;
+        endY = e.offsetY;
+        redrawCanvas();
+        if (currentTool === 'line') {
+            drawLine(startX, startY, endX, endY, 'temporary');
+        } else if (currentTool === 'ellipse') {
+            drawEllipse(startX, startY, endX, endY, 'temporary');
+        }
+    }
+
+    function endDrawing() {
+        if (!drawing) return;
+        drawing = false;
+
+        if (currentTool === 'line') {
+            const pixelLength = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+            const newLine = { id: ++shapeCounter, type: 'line', startX, startY, endX, endY, pixelLength };
+            drawnShapes.push(newLine);
+            openScalePopup(pixelLength);
+        } else if (currentTool === 'ellipse') {
+            const centerX = (startX + endX) / 2;
+            const centerY = (startY + endY) / 2;
+            const radiusX = Math.abs(endX - startX) / 2;
+            const radiusY = Math.abs(endY - startY) / 2;
+            const newEllipse = { id: ++shapeCounter, type: 'ellipse', centerX, centerY, radiusX, radiusY };
+            drawnShapes.push(newEllipse);
+            if (drawnShapes.length === 1) {
+                openScalePopup(Math.max(radiusX, radiusY) * 2);
+            }
+            analyzeGrainSizeInEllipse(newEllipse);
+        }
+        redrawCanvas();
+    }
+
+    function stopDrawing() {
+        drawing = false;
+    }
+
+    function drawLine(x1, y1, x2, y2, state = 'final') {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    }
+
+    // Draw ellipse tool
+    function drawEllipse(x1, y1, x2, y2, state = 'final') {
+        const centerX = (x1 + x2) / 2;
+        const centerY = (y1 + y2) / 2;
+        const radiusX = Math.abs(x2 - x1) / 2;
+        const radiusY = Math.abs(y2 - y1) / 2;
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+
+    // Resets drawing tools
+    function redrawCanvas() {
+        ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+        ctx.drawImage(img, 0, 0);
+        drawnShapes.forEach(shape => {
+            if (shape.type === 'line') {
+                drawLine(shape.startX, shape.startY, shape.endX, shape.endY);
+            } else if (shape.type === 'ellipse') {
+                drawEllipse(shape.startX, shape.startY, shape.endX, shape.endY);
+            }
+        });
+        updateMeasurementsTable();
+    }
+
+
+    function openScalePopup(pixelLength) {
+        distanceInPixelsInput.value = pixelLength ? pixelLength.toFixed(2) : '';
+        scalePopup.style.display = 'block';
+        overlay.style.display = 'block';
+    }
+
+    function getScaleInput() {
+        const distanceInPixl = parseFloat(distanceInPixelsInput.value);
+        const knownDistance = parseFloat(knownDistanceInput.value);
+        const pixelAspectRatio = parseFloat(pixelAspectRatioInput.value);
+        const units = unitsInput.value;
+
+        if (isNaN(distanceInPixl) || isNaN(knownDistance) || isNaN(pixelAspectRatio) || !units) {
+            alert("Invalid input. Please enter numeric values...");
+            return;
+        }
+
+        imageScale = calculateScale(distanceInPixl, knownDistance, pixelAspectRatio, units);
+
+        // Update the drawnShapes with real-world measurements
+        drawnShapes.forEach(shape => {
+            if (imageScale && imageScale.scale) {
+                if (shape.type === 'line') {
+                    shape.realWorldLength = shape.pixelLength * imageScale.scale;
+                    shape.unit = imageScale.units;
+                } else if (shape.type === 'ellipse') {
+                    shape.realWorldLength = calculateEllipsePerimeter(shape.radiusX * imageScale.scale, shape.radiusY * imageScale.scale);
+                    shape.realWorldArea = calculateEllipseArea(shape.radiusX * imageScale.scale, shape.radiusY * imageScale.scale);
+                    const grainData = analyzeGrainSizeInEllipse(shape);
+                    shape.averageGrainArea = grainData ? grainData.averageGrainArea : NaN;
+                    shape.unit = grainData ? grainData.unit : (imageScale ? imageScale.units + "²" : "pixels²");
+                }
+            } else {
+                shape.unit = 'pixels';
+                if (shape.type === 'ellipse') {
+                    const grainData = analyzeGrainSizeInEllipse(shape);
+                    shape.averageGrainArea = grainData ? grainData.averageGrainArea : NaN;
+                    shape.unit = "pixels²";
+                }
+            }
+        });
+
+        alert(`Scale set: ${imageScale.scale.toFixed(4)} ${imageScale.units} per pixel...`);
+
+        // Hide the popup and redraw to update the table
+        scalePopup.style.display = 'none';
+        overlay.style.display = 'none';
+        redrawCanvas();
+    }
+
+
+    function calculateScale(distanceInPixl, knownDistance, pixelAspectRatio, units) {
+        const scaleUnitsPerPixel = knownDistance / distanceInPixl;
+        return {
+            scale: scaleUnitsPerPixel,
+            units: units,
+            aspectRatio: pixelAspectRatio
+        };
+    }
+
+
+    function updateMeasurementsTable() {
+        measurementsTableBody.innerHTML = '';
+        drawnShapes.forEach(shape => {
+            const row = measurementsTableBody.insertRow();
+            const idCell = row.insertCell();
+            const typeCell = row.insertCell();
+            const lengthCell = row.insertCell();
+            const areaCell = row.insertCell();
+            const grainSizeCell = row.insertCell();
+            const unitCell = row.insertCell();
+
+            idCell.textContent = shape.id;
+            typeCell.textContent = shape.type;
+            lengthCell.textContent = shape.realWorldLength !== undefined ? shape.realWorldLength.toFixed(3) : 'N/A';
+            areaCell.textContent = shape.realWorldArea !== undefined ? shape.realWorldArea.toFixed(3) : 'N/A';
+            grainSizeCell.textContent = shape.averageGrainArea !== undefined ? `${shape.averageGrainArea.toFixed(3)} ${shape.unit || (imageScale ? imageScale.units + "²" : "pixels²")}` : 'N/A';
+            unitCell.textContent = shape.unit || (imageScale ? imageScale.units : 'pixels');
+        });
+    }
+
+    function calculateEllipseArea(radiusX, radiusY) {
+        return Math.PI * radiusX * radiusY;
+    }
+
+    function calculateEllipsePerimeter(radiusX, radiusY) {
+        const h = Math.pow((radiusX - radiusY), 2) / Math.pow((radiusX + radiusY), 2);
+        return Math.PI * (radiusX + radiusY) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
+    }
+
+    // Calculations
+    function analyzeGrainSizeInEllipse(ellipse) {
+        if (!imageScale || !img) {
+            return { averageGrainArea: NaN, unit: "pixels²" };
+        }
+
+        const centerX = ellipse.centerX;
+        const centerY = ellipse.centerY;
+        const radiusX = ellipse.radiusX;
+        const radiusY = ellipse.radiusY;
+
+        const sampledPixels = [];
+        const step = 2; // Adjust for sampling density
+
+        const minX = Math.floor(centerX - radiusX);
+        const maxX = Math.ceil(centerX + radiusX);
+        const minY = Math.floor(centerY - radiusY);
+        const maxY = Math.ceil(centerY + radiusY);
+
+        const canvasWidth = imageCanvas.width;
+        const canvasHeight = imageCanvas.height;
+
+        for (let y = minY; y < maxY; y += step) {
+            for (let x = minX; x < maxX; x += step) {
+                if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
+                    const normalizedX = (x - centerX) / radiusX;
+                    const normalizedY = (y - centerY) / radiusY;
+                    if (normalizedX * normalizedX + normalizedY * normalizedY <= 1) {
+                        const pixelData = ctx.getImageData(x, y, 1, 1).data;
+                        const intensity = (pixelData[0] + pixelData[1] + pixelData[2]) / 3;
+                        sampledPixels.push(intensity);
+                    }
+                }
+            }
+        }
+
+        if (sampledPixels.length < 2) {
+            return { averageGrainArea: NaN, unit: imageScale ? imageScale.units + "²" : "pixels²" };
+        }
+
+        let grainCount = 0;
+        let totalArea = 0;
+        let currentGrainSize = 1;
+        const threshold = 15; // Adjust this threshold
+
+        for (let i = 0; i < sampledPixels.length - 1; i++) {
+            if (Math.abs(sampledPixels[i] - sampledPixels[i + 1]) > threshold) {
+                grainCount++;
+                totalArea += currentGrainSize;
+                currentGrainSize = 1;
+            } else {
+                currentGrainSize++;
+            }
+        }
+        if (currentGrainSize > 0) {
+            grainCount++;
+            totalArea += currentGrainSize;
+        }
+
+        let averageGrainArea = NaN;
+        let unit = imageScale ? imageScale.units + "²" : "pixels²";
+
+        if (grainCount > 0) {
+            const ellipsePixelArea = Math.PI * ellipse.radiusX * ellipse.radiusY;
+            const averagePixelAreaPerGrain = ellipsePixelArea / grainCount;
+            averageGrainArea = imageScale && imageScale.scale ? averagePixelAreaPerGrain * imageScale.scale * imageScale.scale : averagePixelAreaPerGrain;
+        }
+
+        return { averageGrainArea: averageGrainArea, unit: unit };
+    }
+
+    exportButton.addEventListener('click', () => {
+        const table = document.getElementById('measurementsTable');
+        let csv = [];
+        const rows = table.querySelectorAll('tr');
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.querySelectorAll('th, td');
+            let rowData = [];
+            for (let j = 0; j < cells.length; j++) {
+                rowData.push(cells[j].innerText);
+            }
+            csv.push(rowData.join(','));
+        }
+
+        const csvString = csv.join('\n');
+        const filename = 'measurements_table.csv';
+
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+        if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+    });
+
+</script>
+
+
+
+</body>
+</html>
