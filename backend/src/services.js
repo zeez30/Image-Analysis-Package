@@ -1,5 +1,7 @@
 const sharp = require('sharp'); // Calling Sharp library
 const path = require('path'); // For handling file paths
+const gui = require('node-gui');
+
 
 // Function to get the input file path from the terminal
 function getInputPath() {
@@ -29,6 +31,7 @@ async function imagePreprocessingCalibration(inputPath, outputPath) {
         await sharp(inputPath)
             .sharpen({ sigma: 1.0 }) // Mild sharpening
             .grayscale() // Convert to grayscale
+            .blur()
             .toFile(outputPath); // Save the preprocessed image
 
         console.log("Image preprocessing complete:", outputPath);
@@ -53,6 +56,37 @@ async function exportImage(inputPath, outputPath, format = "jpeg") {
     }
 }
 
+
+async function simpleDisplay(imagePath) {
+    const image = await sharp(imagePath).toBuffer();
+
+    const win = new gui.Window({
+        title: 'Image Display',
+        width: 800,
+        height: 600
+    });
+
+    const canvas = new gui.Canvas();
+    win.setContentView(canvas);
+
+    canvas.on('draw', (ctx) => {
+        // Draw image
+        const img = new gui.Image(image);
+        ctx.drawImage(img, 0, 0);
+
+        // Draw lines (example)
+        ctx.strokeColor = '#ff0000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(50, 50);
+        ctx.lineTo(200, 200);
+        ctx.stroke();
+    });
+
+    win.show();
+}
+
+
 // Main function to run the script
 (async function () {
     try {
@@ -70,3 +104,4 @@ async function exportImage(inputPath, outputPath, format = "jpeg") {
         console.error("Error in main workflow:", error);
     }
 })();
+
