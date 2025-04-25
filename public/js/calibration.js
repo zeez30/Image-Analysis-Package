@@ -12,8 +12,9 @@ const drawCalibrationPointsButton = document.getElementById('drawCalibrationPoin
 export let point1 = null;
 export let point2 = null;
 export let pixelDistance = null;
-export let calibrationFactor = null;
+let calibrationFactor = null; //tweaked to not export it initially
 let isDrawingCalibrationPoints = false;
+let exportedUnits = ''; // Variable to hold the units for export
 
 import { redrawCanvas } from './imageUtils.js';
 
@@ -70,6 +71,7 @@ export function calibrateImage() {
             alert(`Calibration successful! Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`);
             localStorage.setItem('calibrationFactor', calibrationFactor);
             localStorage.setItem('calibrationUnits', units);
+            exportedUnits = units; // Capture the units for export
         } else {
             alert("Please select two points on the image first.");
         }
@@ -87,6 +89,7 @@ export function resetPoints() {
     pixelDistance = null;
     calibrationFactor = null;
     calibrationInfo.textContent = '';
+    exportedUnits = ''; // Reset exported units
     redrawCanvas();
 }
 
@@ -115,3 +118,5 @@ export function setupCalibrationCanvas() {
         calibrationCanvas.style.cursor = isDrawingCalibrationPoints ? 'crosshair' : 'default';
     });
 }
+
+export { calibrationFactor, exportedUnits as units }; //NOTE: unused export will cause js to not work

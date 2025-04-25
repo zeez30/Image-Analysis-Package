@@ -1,5 +1,5 @@
 // Import necessary elements from other modules if needed
-import { calibrationCanvas } from './calibration.js';
+import { calibrationCanvas, calibrationFactor, units as calibrationUnits } from './calibration.js';
 
 // Get references to the toolbar buttons
 const lineToolButton = document.getElementById('lineToolButton');
@@ -16,6 +16,127 @@ let startX, startY;
 let endX, endY;
 let drawnShapes = [];
 let shapeCounter = 0;
+
+const analyzeGrainSizeButton = document.getElementById('analyzeGrainSizeButton');
+
+if (analyzeGrainSizeButton) {
+    analyzeGrainSizeButton.addEventListener('click', async () => {
+        console.log('Analyze Grain Size button clicked');
+        await initiateGrainSizeAnalysis();
+    });
+}
+
+async function initiateGrainSizeAnalysis() {
+    if (!drawnShapes.length) {
+        alert('Please draw some lines or ellipses before analysis.');
+        return;
+    }
+
+    const canvas = document.getElementById('calibrationCanvas');
+    if (!canvas) {
+        alert('Calibration canvas not found.');
+        return;
+    }
+    const imageDataURL = canvas.toDataURL('image/png'); // Or however your image is best represented
+
+    const analysisData = {
+        imageData: imageDataURL,
+        shapes: drawnShapes,
+        scale: calibrationFactor,
+        units: calibrationUnits
+    };
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Please log in to perform analysis.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/analyze/grainsize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(analysisData)
+        });
+
+        if (response.ok) {
+            const results = await response.json();
+            console.log('Grain size analysis results:', results);
+            displayAnalysisResults(results);
+        } else {
+            const errorData = await response.json();
+            console.error('Grain size analysis failed:', errorData.error || 'Unknown error');
+            alert(`Grain size analysis failed: ${errorData.error || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error sending analysis request:', error);
+        alert('Error sending analysis request.');
+    }
+}
+
+// function displayAnalysisResults(results) {
+//     const exportedDataDisplay = document.getElementById('exportedDataDisplay');
+//     if (!exportedDataDisplay) {
+//         console.error('exportedDataDisplay element not found.');
+//         return;
+//     }
+//     exportedDataDisplay.innerHTML = ''; // Clear previous results
+//
+//     if (results && results.length > 0) {
+//         let outputHTML = '<h3>Analysis Results:</h3><ul>';
+//         results.forEach(result => {
+//             if (result.type === 'line') {
+//                 outputHTML += `<li>Line ${result.id}: Length = ${result.realWorldLength ? result.realWorldLength.toFixed(3) + ' ' + result.unit : 'N/A'}</li>`;
+//             } else if (result.type === 'ellipse') {
+//                 outputHTML += `<li>Ellipse ${result.id}: Area = ${result.realWorldArea ? result.realWorldArea.toFixed(3) + ' ' + result.unit : 'N/A'}`;
+//                 if (result.averageGrainArea) {
+//                     outputHTML += `, Avg. Grain Area = ${result.averageGrainArea.toFixed(3) + ' ' + (result.grainUnit || (calibrationUnits ? calibrationUnits + '²' : 'pixels²'))}`;
+//                 }
+//                 outputHTML += `</li>`;
+//             }
+//         });
+//         outputHTML += '</ul>';
+//         exportedDataDisplay.innerHTML = outputHTML;
+//     } else {
+//         exportedDataDisplay.textContent = 'No analysis results received.';
+//     }
+// }
+
+function displayAnalysisResults(results) {
+    const exportedDataDisplay = document.getElementById('exportedDataDisplay');
+    if (!exportedDataDisplay) {
+        console.error('exportedDataDisplay element not found.');
+        return;
+    }
+    exportedDataDisplay.innerHTML = ''; // Clear previous results
+
+    if (results && results.length > 0) {
+        let outputHTML = '<h3>Analysis Results:</h3><ul>';
+        results.forEach(result => {
+            if (result.type === 'line') {
+                outputHTML += `<li>Line ${result.id}: Length = ${result.realWorldLength ? Number(result.realWorldLength).toFixed(3) + ' ' + result.unit : 'N/A'}</li>`;
+            } else if (result.type === 'ellipse') {
+                const realWorldArea = Number(result.realWorldArea);
+                const realWorldPerimeter = Number(result.realWorldPerimeter);
+                const averageGrainArea = result.averageGrainArea ? Number(result.averageGrainArea) : null;
+
+                outputHTML += `<li>Ellipse ${result.id}: Area = ${isNaN(realWorldArea) ? 'N/A' : realWorldArea.toFixed(3) + ' ' + result.unit}`;
+                outputHTML += `, Perimeter = ${isNaN(realWorldPerimeter) ? 'N/A' : realWorldPerimeter.toFixed(3)} ${result.unit.slice(0, -1)}`; // Assuming unit for perimeter is the base unit
+                if (averageGrainArea !== null) {
+                    outputHTML += `, Avg. Grain Area = ${averageGrainArea.toFixed(3) + ' ' + result.grainUnit}`;
+                }
+                outputHTML += `</li>`;
+            }
+        });
+        outputHTML += '</ul>';
+        exportedDataDisplay.innerHTML = outputHTML;
+    } else {
+        exportedDataDisplay.textContent = 'No analysis results received.';
+    }
+}
 
 // Function to update button appearance
 function updateButtonAppearance(activeButton) {
