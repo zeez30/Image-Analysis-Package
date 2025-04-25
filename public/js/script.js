@@ -8,6 +8,9 @@ import {downloadCSV, exportDataButton, fetchExportedData} from './dataExport.js'
 // Import button event listeners
 import './buttonHandlers.js';
 
+// Import drawing tools functionality
+import './drawingTools.js';
+
 // Event Listeners
 if (calibrateButton) {
     calibrateButton.addEventListener('click', calibrateImage);

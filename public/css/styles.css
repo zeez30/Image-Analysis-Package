@@ -167,6 +167,10 @@ align-items: stretch;
         font-family: inherit;
     }
 
+    ul li button.active {
+        background-color: #f0f0f0;
+    }
+
     ul li button:hover {
         background-color: #f0f0f0;
     }
