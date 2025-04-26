@@ -7,6 +7,7 @@ export const loginButton = document.getElementById('loginButton');
 export const logoutButton = document.getElementById('logoutButton');
 
 import { loadImage } from './imageSaveLoad.js'; // Assuming image loading is in imageSaveLoad.js
+import { saveCurrentImage, loadCurrentImage, clearCurrentImage } from './indexedDBImageStore.js'
 
 async function register() {
     const username = usernameInput.value; // Get username from input
@@ -61,12 +62,89 @@ async function login() {
 }
 export { login };
 
+// function logout() {
+//     localStorage.removeItem('token'); // Remove token from local storage
+//     localStorage.removeItem('userId'); // Remove userId from local storage
+//     localStorage.removeItem('calibrationFactor'); // Remove calibration data
+//     localStorage.removeItem('calibrationUnits');
+//     localStorage.removeItem('uploadedImage'); // Remove stored image data
+//
+//     alert('Logout successful!');
+//
+//     import('./imageUpload.js').then(module => {
+//         module.fileInput.style.display = 'block';
+//     });
+//
+//     import('./calibration.js').then(module => {
+//         module.calibrationCanvas.style.display = 'none'; // Hide canvas
+//         module.calibrationCanvas.removeEventListener('click', module.handleCanvasClick);
+//         module.point1 = null;
+//         module.point2 = null;
+//         module.pixelDistance = null;
+//         module.calibrationFactor = null;
+//         module.calibrationInfo.textContent = '';
+//     });
+//     updateUI(); // Update UI to reflect logged-out state
+// }
+
 function logout() {
-    localStorage.removeItem('token'); // Remove token from local storage
-    localStorage.removeItem('userId'); // Remove userId from local storage
-    localStorage.removeItem('calibrationFactor'); // Remove calibration data
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('calibrationFactor');
     localStorage.removeItem('calibrationUnits');
-    localStorage.removeItem('uploadedImage'); // Remove stored image data
+    localStorage.removeItem('uploadedImage');
+
+    // --- IndexedDB Interaction ---
+    const dbName = 'grainAnalysisDB';
+    const storeName = 'currentImage';
+
+    const request = indexedDB.open(dbName);
+
+    request.onsuccess = (event) => {
+        const db = event.target.result;
+        if (db) {
+            const transaction = db.transaction(storeName, 'readwrite');
+            const store = transaction.objectStore(storeName);
+
+            const clearRequest = store.clear();
+
+            clearRequest.onsuccess = () => {
+                console.log('Image data removed from IndexedDB.');
+                const imageContainer = document.querySelector('.imageContainer');
+                if (imageContainer) {
+                    const canvas = imageContainer.querySelector('canvas');
+                    if (canvas) {
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    }
+                    const img = imageContainer.querySelector('img#outputImage');
+                    if (img) {
+                        img.src = '';
+                        img.style.display = 'none';
+                    }
+                }
+            };
+
+            clearRequest.onerror = (error) => {
+                console.error('Error clearing image data from IndexedDB:', error);
+            };
+
+            transaction.oncomplete = () => {
+                db.close();
+            };
+
+            transaction.onerror = (error) => {
+                console.error('Transaction error:', error);
+            };
+        } else {
+            console.warn('IndexedDB not opened.');
+        }
+    };
+
+    request.onerror = (error) => {
+        console.error('Error opening IndexedDB:', error);
+    };
+
     alert('Logout successful!');
 
     import('./imageUpload.js').then(module => {
@@ -74,7 +152,7 @@ function logout() {
     });
 
     import('./calibration.js').then(module => {
-        module.calibrationCanvas.style.display = 'none'; // Hide canvas
+        module.calibrationCanvas.style.display = 'none';
         module.calibrationCanvas.removeEventListener('click', module.handleCanvasClick);
         module.point1 = null;
         module.point2 = null;
@@ -82,8 +160,9 @@ function logout() {
         module.calibrationFactor = null;
         module.calibrationInfo.textContent = '';
     });
-    updateUI(); // Update UI to reflect logged-out state
+    updateUI();
 }
+
 export { logout };
 
 export function updateUI() {
