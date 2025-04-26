@@ -2,11 +2,13 @@
 import { setupCalibrationCanvas, calibrateImage, resetPoints, resetPointsButton, calibrateButton } from './calibration.js';
 import { registerButton, loginButton, logoutButton, register, login, logout, updateUI } from './auth.js';
 import { loadImage } from './imageSaveLoad.js';
-import {downloadCSV, exportDataButton, fetchExportedData} from './dataExport.js';
-//NOTE: fetchExportedData is not functional yet as there is no API route file or backend file to connect it to
+import {downloadCSV, exportDataButton} from './dataExport.js';
 
 // Import button event listeners
 import './buttonHandlers.js';
+
+// Import drawing tools functionality
+import './drawingTools.js';
 
 // Event Listeners
 if (calibrateButton) {

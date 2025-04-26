@@ -26,13 +26,15 @@
                 Edit
                 <div class="dropdown-content">
                     <label>
-                        Toggle Greyscale <input type="checkbox">
+                        Toggle Greyscale <input type="checkbox" id="greyscaleToggle">
                     </label>
                     <label>
-                        Sharpness <input type="range" min="1" max="100" value="50" class="slider">
+                        Sharpness <input type="range" id="sharpnessSlider" min="0.1" max="5" step="0.1" value="1" class="slider">
+                        <span id="sharpnessValue">1.0</span>
                     </label>
                     <label>
-                        Smoothing <input type="range" min="1" max="100" value="50" class="slider">
+                        Smoothing <input type="range" id="smoothingSlider" min="0" max="20" value="0" class="slider">
+                        <span id="smoothingValue">0</span>
                     </label>
                 </div>
             </li>
@@ -96,13 +98,40 @@
             <li class="dropdown" id="brightnessDropdownContainer">
                 <button id="brightnessButton">Brightness</button>
                 <div class="dropdown-content" id="brightnessDropdownContent">
-                    <label for="brightnessSlider">Brightness:</label>
-                    <input type="range" id="brightnessSlider" min="-1" max="1" step="0.1" value="0">
-                    <span id="brightnessValue">0.0</span>
+                    <label for="brightnessDropdown">Brightness:</label>
+                    <select id="brightnessDropdown">
+                        <option value="0.1">0.1</option>
+                        <option value="0.2">0.2</option>
+                        <option value="0.3">0.3</option>
+                        <option value="0.4">0.4</option>
+                        <option value="0.5">0.5</option>
+                        <option value="0.6">0.6</option>
+                        <option value="0.7">0.7</option>
+                        <option value="0.8">0.8</option>
+                        <option value="0.9">0.9</option>
+                        <option value="1.0" selected>1.0</option>
+                        <option value="1.1">1.1</option>
+                        <option value="1.2">1.2</option>
+                        <option value="1.3">1.3</option>
+                        <option value="1.4">1.4</option>
+                        <option value="1.5">1.5</option>
+                        <option value="1.6">1.6</option>
+                        <option value="1.7">1.7</option>
+                        <option value="1.8">1.8</option>
+                        <option value="1.9">1.9</option>
+                        <option value="2.0">2.0</option>
+                    </select>
                 </div>
             </li>
-            <li><button>Tool 4</button></li>
-            <li><button>Tool 5</button></li>
+            <li>
+                <button id="lineToolButton"> Line Tool </button>
+            </li>
+            <li>
+                <button id="ellipseToolButton"> Ellipse Tool </button>
+            </li>
+            <li>
+                <button id="analyzeGrainSizeButton">Analyze Grain Size</button>
+            </li>
         </ul>
     </div>
 
@@ -115,13 +144,16 @@
     <div class="inputBox">
         <div class="calibrationPanel">
             <h3>Calibration</h3>
-            <h4>Calibration Points</h4>
+            <h4>Calibration Points <button id="drawCalibrationPointsButton">Draw Points</button></h4>
             <p>Click on two distinct points on the image to define a known distance.</p>
             <p>Point 1 will be marked in red, and Point 2 in blue.</p>
 
             <input type="number" id="knownDistance" placeholder="Distance in units">
 
-            <input type="text" id="units" placeholder="Units">
+            <label for="unitsDropdown">Units:</label>
+            <select id="unitsDropdown">
+                <option value="microns" selected>Microns (&micro;m)</option>
+            </select>
 
             <button id="calibrateButton">Apply Calibration</button>
             <button id="resetPointsButton">Reset Calibration</button>
@@ -133,6 +165,7 @@
 
     <div class="imageContainer">
         <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/tiff">
+        <canvas id="drawingCanvas" style="position: absolute; top: 0; left: 0; pointer-events: none; z-index: 2;"></canvas>
         <canvas id="calibrationCanvas" style="display: none; position: absolute; top: 0; left: 0;"></canvas>
     </div>
 </div>

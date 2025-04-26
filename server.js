@@ -7,13 +7,15 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const imageRoutes = require('./routes/image');
 const imageManipulationRoute = require('./routes/imageManipulationRoute');
+const analyzeRoutes = require('./routes/analyze');
+const sharpManipulationRoute = require('./routes/sharpManipulationRoute');
 
 const app = express();
 const port = 3000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.json({ limit: '20mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Database Connection
@@ -28,6 +30,8 @@ mongoose.connect('mongodb+srv://administrator:uMi56bBlMpbOk2IN@imageanalysis.ne3
 app.use('/api/auth', authRoutes);
 app.use('/api/images', imageRoutes);
 app.use('/api/manipulate', imageManipulationRoute);
+app.use('/api/analyze', analyzeRoutes);
+app.use('/api/manipulate', sharpManipulationRoute);
 
 // Serve index.html
 app.get('/', (req, res) => {
