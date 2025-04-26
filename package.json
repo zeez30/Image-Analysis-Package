@@ -1,0 +1,25 @@
+{
+  "name": "image-analysis-package",
+  "version": "1.0.0",
+  "description": "Image Analysis Package\r ----\r Code of conduct:\r - Mandatory Friday Meetings 11:30 am NOT OPTIONAL \r - Let the team know ON TIME if you cannot attend \r - Abide by group deadlines \r - The base contribution per person is 20\r - Each marking down is 1.5 per week \r - CLEAR COMMUNICATION",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jimp": "^0.2.1",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jimp": "^1.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.15.0",
+    "mongoose": "^8.13.2",
+    "sharp": "^0.34.1"
+  }
+}
