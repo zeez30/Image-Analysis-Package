@@ -150,7 +150,10 @@
 
             <input type="number" id="knownDistance" placeholder="Distance in units">
 
-            <input type="text" id="units" placeholder="Units">
+            <label for="unitsDropdown">Units:</label>
+            <select id="unitsDropdown">
+                <option value="microns" selected>Microns (&micro;m)</option>
+            </select>
 
             <button id="calibrateButton">Apply Calibration</button>
             <button id="resetPointsButton">Reset Calibration</button>

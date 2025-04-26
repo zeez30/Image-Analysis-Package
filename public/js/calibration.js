@@ -15,6 +15,7 @@ export let pixelDistance = null;
 let calibrationFactor = null; //tweaked to not export it initially
 let isDrawingCalibrationPoints = false;
 let exportedUnits = ''; // Variable to hold the units for export
+export let calibrationUnits = 'µm'; // Declare and initialize calibrationUnits
 
 import { redrawCanvas } from './imageUtils.js';
 
@@ -53,31 +54,92 @@ function handleCanvasClick(event) {
     }
 }
 
-export function calibrateImage() {
-    if (point1 && point2) {
-        const knownDistance = parseFloat(knownDistanceInput.value);
-        const units = unitsInput.value.trim();
+// export function calibrateImage() {
+//     if (point1 && point2) {
+//         const knownDistance = parseFloat(knownDistanceInput.value);
+//         const units = unitsInput.value.trim();
+//
+//         if (isNaN(knownDistance) || knownDistance <= 0 || !units) {
+//             alert("Please enter a valid known distance and units.");
+//             return;
+//         }
+//
+//         const pixelDistance = calculatePixelDistance();
+//
+//         if (pixelDistance) {
+//             calibrationFactor = knownDistance / pixelDistance; // Units per pixel
+//             calibrationInfo.textContent = `Calibration Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`;
+//             alert(`Calibration successful! Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`);
+//             localStorage.setItem('calibrationFactor', calibrationFactor);
+//             localStorage.setItem('calibrationUnits', units);
+//             exportedUnits = units; // Capture the units for export
+//         } else {
+//             alert("Please select two points on the image first.");
+//         }
+//     } else {
+//         alert("Please select two points on the image first.");
+//     }
+// }
 
-        if (isNaN(knownDistance) || knownDistance <= 0 || !units) {
-            alert("Please enter a valid known distance and units.");
-            return;
-        }
-
-        const pixelDistance = calculatePixelDistance();
-
-        if (pixelDistance) {
-            calibrationFactor = knownDistance / pixelDistance; // Units per pixel
-            calibrationInfo.textContent = `Calibration Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`;
-            alert(`Calibration successful! Factor: ${calibrationFactor.toFixed(4)} ${units} per pixel`);
-            localStorage.setItem('calibrationFactor', calibrationFactor);
-            localStorage.setItem('calibrationUnits', units);
-            exportedUnits = units; // Capture the units for export
-        } else {
-            alert("Please select two points on the image first.");
-        }
-    } else {
-        alert("Please select two points on the image first.");
+function calculatePixelDistance(p1, p2) {
+    if (p1 && p2) {
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        return Math.sqrt(dx * dx + dy * dy);
     }
+    return 0;
+}
+
+export function calibrateImage() {
+    if (!point1 || !point2 || !calibrationCanvas) {
+        alert('Please select two points on the image.');
+        return;
+    }
+
+    const knownDistanceInput = document.getElementById('knownDistance');
+    const unitsDropdown = document.getElementById('unitsDropdown');
+    const calibrationInfo = document.getElementById('calibrationInfo');
+
+    if (!knownDistanceInput || !unitsDropdown || !calibrationInfo) {
+        console.error('Calibration input elements not found.');
+        return;
+    }
+
+    const knownDistance = parseFloat(knownDistanceInput.value);
+    const selectedUnit = unitsDropdown.value; // Get the selected value from the dropdown
+
+    if (isNaN(knownDistance) || knownDistance <= 0) {
+        alert('Please enter a valid positive known distance.');
+        return;
+    }
+
+    pixelDistance = calculatePixelDistance(point1, point2); // Use the local calculatePixelDistance function
+
+    if (pixelDistance === 0) {
+        alert('The two calibration points cannot be the same.');
+        return;
+    }
+
+    calibrationFactor = knownDistance / pixelDistance;
+
+    let unitDisplay;
+    if (selectedUnit === 'microns') {
+        unitDisplay = '\u03BC';
+        calibrationUnits = 'µm';
+    } else {
+        unitDisplay = selectedUnit;
+        calibrationUnits = selectedUnit;
+    }
+
+    calibrationInfo.innerHTML = `Scaling Factor: 1 pixel = ${(calibrationFactor).toFixed(5)} ${unitDisplay} per pixel`; // More accurate display
+
+    // Store calibration data in localStorage
+    localStorage.setItem('calibrationFactor', calibrationFactor);
+    localStorage.setItem('calibrationUnits', calibrationUnits);
+
+    alert(`Calibration applied. 1 pixel = ${(calibrationFactor).toFixed(5)} ${unitDisplay} per pixel`);
+
+    resetPoints();
 }
 
 export function resetPoints() {
@@ -93,15 +155,15 @@ export function resetPoints() {
     redrawCanvas();
 }
 
-function calculatePixelDistance() {
-    if (point1 && point2) {
-        const dx = point2.x - point1.x;
-        const dy = point2.y - point1.y;
-        pixelDistance = Math.sqrt(dx * dx + dy * dy);
-        return pixelDistance;
-    }
-    return null;
-}
+// function calculatePixelDistance() {
+//     if (point1 && point2) {
+//         const dx = point2.x - point1.x;
+//         const dy = point2.y - point1.y;
+//         pixelDistance = Math.sqrt(dx * dx + dy * dy);
+//         return pixelDistance;
+//     }
+//     return null;
+// }
 
 // export function setupCalibrationCanvas() {
 //     redrawCanvas(); // Call redrawCanvas to handle initial setup or image change
