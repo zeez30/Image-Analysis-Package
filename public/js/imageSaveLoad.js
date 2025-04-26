@@ -1,4 +1,4 @@
-import { loadCurrentImage, clearCurrentImage } from './indexedDBImageStore.js';
+import {loadCurrentImage, clearCurrentImage, saveCurrentImage} from './indexedDBImageStore.js';
 import { setOriginalImageDataURL } from './imageUtils.js';
 
 const calibrationCanvas = document.getElementById('calibrationCanvas'); // Get the canvas
@@ -38,8 +38,10 @@ export async function loadImage() {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        if (data && data.imageData) {
-                            loadImageOnCanvas(`data:${data.mimeType};base64,${data.imageData}`);
+                        if (data && data.imageData && data.mimeType) {
+                            const imageData = `data:${data.mimeType};base64,${data.imageData}`;
+                            loadImageOnCanvas(imageData);
+                            saveCurrentImage(imageData); // Now imageData is in scope
                         } else {
                             console.log('No image found in persistent storage for this user.');
                             calibrationCanvas.width = 0;
