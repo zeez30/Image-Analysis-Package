@@ -1,30 +1,5 @@
-//
-// export const fileInput = document.querySelector('#fileUpload');
-//
-// import { redrawCanvas } from './imageUtils.js';
-//
-// fileInput.addEventListener("change", async () => {
-//     let [file] = fileInput.files;
-//
-//     if (file) {
-//         const reader = new FileReader();
-//         reader.onload = (e) => {
-//             localStorage.setItem('uploadedImage', e.target.result); // Store image data in local storage
-//             redrawCanvas(); // Draw the image on the canvas
-//             fileInput.style.display = 'none'; // Hide the file input button
-//         }
-//
-//         reader.onerror = (err) => {
-//             console.error("Error reading file:", err);
-//             alert("An error occurred while reading the file");
-//         }
-//
-//         reader.readAsDataURL(file);
-//     }
-// });
-
-// imageUpload.js
 import { saveCurrentImage } from './indexedDBImageStore.js';
+import { setOriginalImageDataURL } from './imageUtils.js';
 
 const fileInput = document.getElementById('fileUpload');
 export { fileInput };
@@ -42,11 +17,11 @@ document.getElementById('fileUpload').addEventListener('change', function() {
                     const ctx = calibrationCanvas.getContext('2d');
                     const img = new Image();
                     img.onload = function() {
-                        // Set canvas dimensions to the image dimensions
                         calibrationCanvas.width = img.width;
                         calibrationCanvas.height = img.height;
                         ctx.drawImage(img, 0, 0);
-                        calibrationCanvas.style.display = 'block'; // Make the canvas visible
+                        calibrationCanvas.style.display = 'block';
+                        setOriginalImageDataURL(calibrationCanvas.toDataURL('image/png')); // Set originalImageDataURL here
                     };
                     img.src = imageDataURL;
                 } else {

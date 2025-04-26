@@ -1,7 +1,10 @@
 import { saveImage } from './imageSaveLoad.js';
 import { fileInput } from './imageUpload.js';
 import { calibrationCanvas } from './calibration.js';
-import { originalImageDataURL } from './imageUtils.js';
+// import { originalImageDataURL } from './imageUtils.js';
+// import * as ImageUtils from './imageUtils.js';
+import {originalImageDataURL, setOriginalImageDataURL} from './imageUtils.js';
+
 import { fetchExportedData, downloadCSV, exportDataButton } from './dataExport.js';
 //NOTE: Need to implement API route and file to connect with backend once functional
 
@@ -85,7 +88,7 @@ performCropButton.addEventListener('click', async (e) => {
     }
 
     const canvas = calibrationCanvas;
-    if (!canvas || !originalImageDataURL) {
+    if (!canvas || !originalImageDataURL) { // Access using the module
         console.error('Calibration canvas or original image not found.');
         alert('Error: Canvas or original image not loaded.');
         return;
@@ -102,7 +105,7 @@ performCropButton.addEventListener('click', async (e) => {
                 y: yValue,
                 height: heightValue,
                 width: widthValue,
-                imageData: originalImageDataURL,
+                imageData: originalImageDataURL, // Access using the module
             }),
         });
 
@@ -120,7 +123,7 @@ performCropButton.addEventListener('click', async (e) => {
                 URL.revokeObjectURL(croppedImageURL);
                 cropDropdownContent.style.display = 'none';
                 console.log('Image cropping and upload to canvas successful!');
-                originalImageDataURL = canvas.toDataURL('image/png');
+                setOriginalImageDataURL(canvas.toDataURL('image/png')); // Use the setter
             };
             img.src = croppedImageURL;
         } else {
@@ -180,7 +183,7 @@ async function rotateCanvas(degrees) {
                 URL.revokeObjectURL(rotatedImageURL);
                 rotateDropdownContent.style.display = 'none';
                 console.log(`Image rotated by ${degrees} degrees.`);
-                originalImageDataURL = rotatedImageURL;
+                setOriginalImageDataURL(rotatedImageURL); // Use the setter
             };
             img.src = rotatedImageURL;
         } else {
@@ -203,7 +206,7 @@ brightnessSlider.addEventListener('input', async () => {
 
 async function adjustBrightness(brightness) {
     const canvas = calibrationCanvas;
-    if (!canvas || !originalImageDataURL) {
+    if (!canvas || !originalImageDataURL) { // Access using the module
         console.error('Canvas or original image not found.');
         alert('Error: Canvas or original image not loaded.');
         return;
@@ -217,7 +220,7 @@ async function adjustBrightness(brightness) {
             },
             body: JSON.stringify({
                 brightness: brightness,
-                imageData: originalImageDataURL,
+                imageData: originalImageDataURL, // Access using the module
             }),
         });
 
@@ -234,7 +237,7 @@ async function adjustBrightness(brightness) {
                 ctx.drawImage(img, 0, 0);
                 URL.revokeObjectURL(adjustedImageURL);
                 console.log(`Image brightness adjusted to ${brightness}.`);
-                originalImageDataURL = canvas.toDataURL('image/png');
+                setOriginalImageDataURL(canvas.toDataURL('image/png')); // Use the setter
             };
             img.src = adjustedImageURL;
         } else {
