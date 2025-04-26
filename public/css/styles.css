@@ -1,5 +1,6 @@
 /* Global Styling */
-* {
+
+*{
     box-sizing: border-box;
 }
 
@@ -8,6 +9,8 @@ body {
     padding: 0;
     /* Placeholder font for now, can change later */
     font-family: verdana, sans-serif;
+    background-color: #a9a9a9;
+    color: #140e01;
 }
 
 /*
@@ -25,12 +28,395 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 }
 
 /* Navbar (where the file, edit and other more technical options are) */
+/*.navbar {*/
+/*    grid-area: 1 / 1 / 2 / 11;*/
+/*    display: flex;*/
+/*    !*justify-content: space-between;*!*/
+/*    align-items: stretch;*/
+/*    border: 5px solid black;*/
+
+/*    ul {*/
+/*        display: flex;*/
+/*        list-style: none;*/
+/*        align-items: center;*/
+/*        margin: 0;*/
+/*        padding: 0;*/
+/*    }*/
+
+/*    ul li {*/
+/*        padding: 10px;*/
+/*        margin-left: 20px;*/
+/*        margin-right: 20px;*/
+/*    }*/
+
+/*    .dropdown {*/
+/*        position: relative;*/
+/*        display: inline-block;*/
+/*    }*/
+
+/*    .dropdown-content {*/
+/*        display: none;*/
+/*        position: absolute;*/
+/*        background-color: #f9f9f9;*/
+/*        min-width: 160px;*/
+/*        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);*/
+/*        z-index: 1;*/
+/*    }*/
+
+/*    .dropdown-content a {*/
+/*        color: black;*/
+/*        padding: 12px 16px;*/
+/*        text-decoration: none;*/
+/*        display: block;*/
+/*    }*/
+
+/*    .dropdown-content input {*/
+/*        color: black;*/
+/*        text-decoration: none;*/
+/*        display: block;*/
+/*    }*/
+
+/*    .dropdown-content a:hover {background-color: #f1f1f1;}*/
+
+/*    .dropdown:hover .dropdown-content {*/
+/*        display: block;*/
+/*    }*/
+
+/*    .logo-container {*/
+/*        width: auto;*/
+/*        height: 50px;*/
+/*        !**/
+/*        Background colour set to red for debugging purposes*/
+/*        If working correctly, no red should be visible*/
+/*        *!*/
+/*        background-color: red;*/
+/*        display: flex;*/
+/*        justify-content: center;*/
+/*        align-items: center;*/
+
+/*        img {*/
+/*            max-width: 100%;*/
+/*            height: 100%;*/
+/*            object-fit: contain;*/
+/*        }*/
+/*    }*/
+
+/*    !*.navbar-content {*!*/
+/*    !* padding-left: 20px;*!*/
+/*    !* display: flex;*!*/
+/*    !* align-items: center;*!*/
+/*    !*}*!*/
+/*}*/
+
+/*#auth-container {*/
+/*    grid-area: 1 / 7 / 2 / 11;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    gap: 10px;*/
+/*}*/
+
+/*#auth-container input {*/
+/*    padding: 5px;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 5px;*/
+/*}*/
+
+/*#auth-container button {*/
+/*    padding: 5px;*/
+/*    background-color: #007bff;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*#auth-container button:hover {*/
+/*    background-color: #0056b3;*/
+/*}*/
+
+/*!* Toolbar (where the buttons for each tool will go) *!*/
+/*.toolbar {*/
+/*    grid-area: 2 / 1 / 3 / 11;*/
+/*    border: 5px solid black;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+
+/*    ul {*/
+/*        display: flex;*/
+/*        list-style: none;*/
+/*        align-items: center;*/
+/*        margin: 0;*/
+/*        padding: 0;*/
+/*        width: 100%;*/
+/*        justify-content: space-around;*/
+/*    }*/
+
+/*    ul li {*/
+/*        border: 5px solid black;*/
+/*        margin: 0;*/
+/*    }*/
+
+/*    ul li button {*/
+/*        display: block;*/
+/*        width: 100%;*/
+/*        height: 100%;*/
+/*        padding: 20px 50px;*/
+/*        border: none;*/
+/*        background: none;*/
+/*        cursor: pointer;*/
+/*        font-size: inherit;*/
+/*        font-family: inherit;*/
+/*    }*/
+
+/*    ul li button.active {*/
+/*        background-color: #f0f0f0;*/
+/*    }*/
+
+/*    ul li button:hover {*/
+/*        background-color: #f0f0f0;*/
+/*    }*/
+
+/*    ul li.dropdown {*/
+/*        position: relative;*/
+/*        display: inline-block;*/
+/*    }*/
+
+/*    ul li.dropdown .dropdown-content {*/
+/*        display: none;*/
+/*        position: absolute;*/
+/*        background-color: #f9f9f9;*/
+/*        min-width: 200px;*/
+/*        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);*/
+/*        z-index: 2;*/
+/*        padding: 10px;*/
+/*        left: 0;*/
+/*    }*/
+
+/*    ul li.dropdown .dropdown-content label {*/
+/*        display: block;*/
+/*        margin-bottom: 5px;*/
+/*        font-size: 0.9em;*/
+/*    }*/
+
+/*    ul li.dropdown .dropdown-content input[type=number],*/
+/*    ul li.dropdown .dropdown-content input[type=text] {*/
+/*        width: calc(100% - 10px);*/
+/*        padding: 5px;*/
+/*        margin-bottom: 10px;*/
+/*        box-sizing: border-box;*/
+/*    }*/
+
+/*    ul li.dropdown .dropdown-content button#performCrop {*/
+/*        padding: 8px 15px;*/
+/*        background-color: #28a745;*/
+/*        color: white;*/
+/*        border: none;*/
+/*        border-radius: 5px;*/
+/*        cursor: pointer;*/
+/*        font-size: 0.9em;*/
+/*    }*/
+
+/*    ul li.dropdown .dropdown-content button#performCrop:hover {*/
+/*        background-color: #1e7e34;*/
+/*    }*/
+/*}*/
+
+/*!* Output Box (where the data will be displayed and the button will go) *!*/
+/*.outputBox {*/
+/*    grid-area: 3 / 9 / 10 / 11;*/
+/*    border: 5px solid black;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    padding: 10px; !* Use similar padding as inputBox *!*/
+/*}*/
+
+/*.outputBox h3 {*/
+/*    margin-top: 0;*/
+/*    margin-bottom: 10px; !* Use similar margin as inputBox *!*/
+/*    text-align: left; !* Align heading with labels in inputBox *!*/
+/*}*/
+
+/*#exportedDataDisplay {*/
+/*    margin-bottom: 10px;*/
+/*    padding: 8px; !* Use similar padding as inputBox inputs *!*/
+/*    border: 1px solid #ccc; !* Use the same border style as inputBox inputs *!*/
+/*    background-color: #f9f9f9; !* Same background as calibrationInfo *!*/
+/*    border-radius: 4px; !* Same border-radius as inputBox inputs *!*/
+/*    font-size: 0.95em; !* Slightly smaller font size *!*/
+/*    white-space: pre-wrap;*/
+/*}*/
+
+/*.outputBox button#exportDataButton {*/
+/*    padding: 10px 15px;*/
+/*    background-color: #007bff; !* Use the primary button color *!*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 5px; !* Same border-radius as other buttons *!*/
+/*    cursor: pointer;*/
+/*    font-size: inherit;*/
+/*    align-self: flex-start;*/
+/*    margin-top: 10px; !* Add some space above the button *!*/
+/*}*/
+
+/*.outputBox button#exportDataButton:hover {*/
+/*    background-color: #0056b3; !* Use the primary button hover color *!*/
+/*}*/
+
+/*!* Input Box (where the data is input) *!*/
+/*.inputBox {*/
+/*    grid-area: 3 / 1 / 10 / 3;*/
+/*    border: 5px solid black;*/
+/*    display: flex;*/
+/*    flex-direction: column; !* Arrange calibration elements vertically *!*/
+/*    align-items: stretch;*/
+/*    padding: 10px;*/
+/*}*/
+
+/*.inputBox > div#calibrationPanel {*/
+/*    margin-bottom: 15px;*/
+/*    border: 5px solid black; !* Add border to the calibration panel *!*/
+/*    padding: 15px;*/
+/*}*/
+
+/*.inputBox h3 {*/
+/*    margin-top: 0;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*.inputBox p {*/
+/*    margin-bottom: 10px;*/
+/*    font-size: 0.9em;*/
+/*    color: #555;*/
+/*}*/
+
+/*.inputBox label {*/
+/*    display: block;*/
+/*    margin-bottom: 5px;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/*.inputBox input[type=text],*/
+/*.inputBox input[type=number] {*/
+/*    padding: 8px;*/
+/*    width: calc(100% - 16px); !* Adjust for padding *!*/
+/*    box-sizing: border-box;*/
+/*    margin-bottom: 10px;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 4px;*/
+/*}*/
+
+/*.inputBox button {*/
+/*    padding: 10px 15px;*/
+/*    background-color: #007bff;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*    font-size: inherit;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*.inputBox button:hover {*/
+/*    background-color: #0056b3;*/
+/*}*/
+
+/*.inputBox div#calibrationInfo {*/
+/*    margin-top: 15px;*/
+/*    padding: 10px;*/
+/*    border: 1px solid #ddd;*/
+/*    background-color: #f9f9f9;*/
+/*    border-radius: 4px;*/
+/*    font-size: 0.95em;*/
+/*}*/
+
+/*.inputBox ul {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    list-style: none;*/
+/*    padding: 0;*/
+/*    margin: 0;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.inputBox ul li {*/
+/*    border: 5px solid black;*/
+/*    padding: 10px;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+/*!* Output Box (where the data is output)*/
+/*.outputBox {*/
+/*    grid-area: 3 / 9 / 10 / 11;*/
+/*    border: 5px solid black;*/
+/*    display: flex;*/
+/*    align-items: stretch;*/
+
+/*    ul {*/
+/*        display: flex;*/
+/*        flex-direction: column;*/
+/*        list-style: none;*/
+/*        align-items: center;*/
+/*        margin: 0;*/
+/*        padding: 0;*/
+/*        width: 100%;*/
+/*    }*/
+
+/*    ul li {*/
+/*        border: 5px solid black;*/
+/*        padding: 10px;*/
+/*        margin: 10px;*/
+/*    }*/
+/*}*!*/
+
+/*!* Image Container (where the imported image goes) *!*/
+/*.imageContainer {*/
+/*    grid-area: 3 / 3 / 10 / 9;*/
+/*    border: 5px solid black;*/
+/*    display: flex;*/
+/*    align-items: center; !* Vertically center *!*/
+/*    justify-content: center; !* Horizontally center *!*/
+/*    background-color: #d2d2d2;*/
+/*    position: relative; !* To allow absolute positioning of canvas *!*/
+/*}*/
+
+/*.imageContainer #fileUpload {*/
+/*    align-self: center;*/
+/*    padding: 10px;*/
+/*    border: 1px solid black;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*    background-color: #737373;*/
+/*    color: white;*/
+/*}*/
+
+/*.imageContainer img#outputImage {*/
+/*    display: none;*/
+/*    max-width: 100%;*/
+/*    height: 100%;*/
+/*    object-fit: contain;*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*}*/
+
+/*.imageContainer canvas#calibrationCanvas {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    max-width: 100%;*/
+/*    max-height: 100%;*/
+/*    object-fit: contain;*/
+/*    cursor: crosshair;*/
+/*}*/
+
 .navbar {
     grid-area: 1 / 1 / 2 / 11;
     display: flex;
-    /*justify-content: space-between;*/
-    align-items: stretch;
+/justify-content: space-between;/
+align-items: stretch;
     border: 5px solid black;
+    background-color: #f8f8f8;
 
     ul {
         display: flex;
@@ -41,34 +427,57 @@ Grids are used here since they're much more rigid than flexboxes and are better 
     }
 
     ul li {
+        padding: 10px;
         margin-left: 20px;
         margin-right: 20px;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content input {
+        color: black;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {background-color: #e0e0e0;}
+
+    .dropdown:hover .dropdown-content {
+        display: block;
     }
 
     .logo-container {
         width: auto;
         height: 50px;
-        /*
-        Background colour set to red for debugging purposes
-        If working correctly, no red should be visible
-        */
-        background-color: red;
         display: flex;
         justify-content: center;
         align-items: center;
-
-        img {
-            max-width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
     }
 
-    /*.navbar-content {*/
-    /*    padding-left: 20px;*/
-    /*    display: flex;*/
-    /*    align-items: center;*/
-    /*}*/
+    .logo-container img {
+        max-width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 }
 
 #auth-container {
@@ -87,7 +496,7 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 
 #auth-container button {
     padding: 5px;
-    background-color: #007bff;
+    background-color: #cb6ce6;
     color: white;
     border: none;
     border-radius: 5px;
@@ -95,13 +504,14 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 }
 
 #auth-container button:hover {
-    background-color: #0056b3;
+    background-color: #a84ac9;
 }
 
 /* Toolbar (where the buttons for each tool will go) */
 .toolbar {
     grid-area: 2 / 1 / 3 / 11;
     border: 5px solid black;
+    background-color: #f0f0f0;
     display: flex;
     align-items: center;
 
@@ -117,70 +527,210 @@ Grids are used here since they're much more rigid than flexboxes and are better 
 
     ul li {
         border: 5px solid black;
-        padding: 20px 50px;
         margin: 0;
     }
+
+    ul li button {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 20px 50px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: inherit;
+        font-family: inherit;
+        color: #140e01;
+    }
+
+    ul li button.active {
+        background-color: #e0e0e0;
+    }
+
+    ul li button:hover {
+        background-color: #e0e0e0;
+    }
+
+    ul li.dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    ul li.dropdown .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 200px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        z-index: 2;
+        padding: 10px;
+        left: 0;
+        border: 1px solid #ccc;
+    }
+
+    ul li.dropdown .dropdown-content label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.9em;
+        color: #333;
+    }
+
+    ul li.dropdown .dropdown-content input[type=number],
+    ul li.dropdown .dropdown-content input[type=text] {
+        width: calc(100% - 10px);
+        padding: 5px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+    }
+
+    ul li.dropdown .dropdown-content button#performCrop {
+        padding: 8px 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9em;
+    }
+
+    ul li.dropdown .dropdown-content button#performCrop:hover {
+        background-color: #1e7e34;
+    }
+}
+
+/* Output Box (where the data will be displayed and the button will go) */
+.outputBox {
+    grid-area: 3 / 9 / 10 / 11;
+    border: 5px solid black;
+    background-color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.outputBox h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: left;
+    color: #333;
+}
+
+#exportedDataDisplay {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 4px;
+    font-size: 0.95em;
+    white-space: pre-wrap;
+    color: #555;
+}
+
+.outputBox button#exportDataButton {
+    padding: 10px 15px;
+    background-color: #cb6ce6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: inherit;
+    align-self: flex-start;
+    margin-top: 10px;
+}
+
+.outputBox button#exportDataButton:hover {
+    background-color: #a84ac9;
 }
 
 /* Input Box (where the data is input) */
 .inputBox {
     grid-area: 3 / 1 / 10 / 3;
     border: 5px solid black;
+    background-color: #f8f8f8;
     display: flex;
+    flex-direction: column;
     align-items: stretch;
-
-    ul {
-        display: flex;
-        flex-direction: column;
-        list-style: none;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-
-    ul li {
-        border: 5px solid black;
-        padding: 10px;
-        margin: 10px;
-
-        /* Styling for number-only input forms */
-        input[type=number]{
-            padding: 5px;
-            margin: 5px;
-            width: 100%;
-
-            placeholder {
-                font-weight: bold;
-                opacity: 0.5;
-                color: darkgrey;
-            }
-        }
-    }
+    padding: 10px;
 }
 
-/* Output Box (where the data is output) */
-.outputBox {
-    grid-area: 3 / 9 / 10 / 11;
+.inputBox > div#calibrationPanel {
+    margin-bottom: 15px;
     border: 5px solid black;
+    padding: 15px;
+    background-color: #f0f0f0;
+}
+
+.inputBox h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.inputBox p {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.inputBox label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.inputBox input[type=text],
+.inputBox input[type=number] {
+    padding: 8px;
+    width: calc(100% - 16px);
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.inputBox button {
+    padding: 10px 15px;
+    background-color: #cb6ce6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: inherit;
+    margin-bottom: 10px;
+}
+
+.inputBox button:hover {
+    background-color: #a84ac9;
+}
+
+.inputBox div#calibrationInfo {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: white;
+    border-radius: 4px;
+    font-size: 0.95em;
+    color: #555;
+}
+
+.inputBox ul {
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
 
-    ul {
-        display: flex;
-        flex-direction: column;
-        list-style: none;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-
-    ul li {
-        border: 5px solid black;
-        padding: 10px;
-        margin: 10px;
-    }
+.inputBox ul li {
+    border: 5px solid black;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    color: #333;
 }
 
 /* Image Container (where the imported image goes) */
@@ -188,23 +738,38 @@ Grids are used here since they're much more rigid than flexboxes and are better 
     grid-area: 3 / 3 / 10 / 9;
     border: 5px solid black;
     display: flex;
-    align-items: stretch;
+    align-items: center;
     justify-content: center;
-    background-color: #d2d2d2;
+    background-color: #d9d9d9;
+    position: relative;
+}
 
-    #fileUpload {
-        align-self: center;
-        padding: 10px;
-        border: 1px solid black;
-        border-radius: 5px;
-        cursor: pointer;
-        background-color: #737373;
-    }
+.imageContainer #fileUpload {
+    align-self: center;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #737373;
+    color: white;
+}
 
-    img {
-        display: none;
-        max-width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
+.imageContainer img#outputImage {
+    display: none;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.imageContainer canvas#calibrationCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    cursor: crosshair;
 }
