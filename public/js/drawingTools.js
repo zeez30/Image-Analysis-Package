@@ -89,44 +89,16 @@ async function initiateGrainSizeAnalysis() {
 //         let outputHTML = '<h3>Analysis Results:</h3><ul>';
 //         results.forEach(result => {
 //             if (result.type === 'line') {
-//                 outputHTML += `<li>Line ${result.id}: Length = ${result.realWorldLength ? result.realWorldLength.toFixed(3) + ' ' + result.unit : 'N/A'}</li>`;
-//             } else if (result.type === 'ellipse') {
-//                 outputHTML += `<li>Ellipse ${result.id}: Area = ${result.realWorldArea ? result.realWorldArea.toFixed(3) + ' ' + result.unit : 'N/A'}`;
-//                 if (result.averageGrainArea) {
-//                     outputHTML += `, Avg. Grain Area = ${result.averageGrainArea.toFixed(3) + ' ' + (result.grainUnit || (calibrationUnits ? calibrationUnits + '²' : 'pixels²'))}`;
-//                 }
-//                 outputHTML += `</li>`;
-//             }
-//         });
-//         outputHTML += '</ul>';
-//         exportedDataDisplay.innerHTML = outputHTML;
-//     } else {
-//         exportedDataDisplay.textContent = 'No analysis results received.';
-//     }
-// }
-
-// function displayAnalysisResults(results) {
-//     const exportedDataDisplay = document.getElementById('exportedDataDisplay');
-//     if (!exportedDataDisplay) {
-//         console.error('exportedDataDisplay element not found.');
-//         return;
-//     }
-//     exportedDataDisplay.innerHTML = ''; // Clear previous results
-//
-//     if (results && results.length > 0) {
-//         let outputHTML = '<h3>Analysis Results:</h3><ul>';
-//         results.forEach(result => {
-//             if (result.type === 'line') {
 //                 outputHTML += `<li>Line ${result.id}: Length = ${result.realWorldLength ? Number(result.realWorldLength).toFixed(3) + ' ' + result.unit : 'N/A'}</li>`;
 //             } else if (result.type === 'ellipse') {
 //                 const realWorldArea = Number(result.realWorldArea);
 //                 const realWorldPerimeter = Number(result.realWorldPerimeter);
-//                 const averageGrainArea = result.averageGrainArea ? Number(result.averageGrainArea) : null;
+//                 const averageGrainSize = result.averageGrainSize ? Number(result.averageGrainSize) : null;
 //
 //                 outputHTML += `<li>Ellipse ${result.id}: Area = ${isNaN(realWorldArea) ? 'N/A' : realWorldArea.toFixed(3) + ' ' + result.unit}`;
 //                 outputHTML += `, Perimeter = ${isNaN(realWorldPerimeter) ? 'N/A' : realWorldPerimeter.toFixed(3)} ${result.unit.slice(0, -1)}`; // Assuming unit for perimeter is the base unit
-//                 if (averageGrainArea !== null) {
-//                     outputHTML += `, Avg. Grain Area = ${averageGrainArea.toFixed(3) + ' ' + result.grainUnit}`;
+//                 if (averageGrainSize !== null) {
+//                     outputHTML += `, Avg. Grain Size = ${averageGrainSize.toFixed(3) + ' ' + result.grainUnit}`;
 //                 }
 //                 outputHTML += `</li>`;
 //             }
@@ -150,7 +122,12 @@ function displayAnalysisResults(results) {
         let outputHTML = '<h3>Analysis Results:</h3><ul>';
         results.forEach(result => {
             if (result.type === 'line') {
-                outputHTML += `<li>Line ${result.id}: Length = ${result.realWorldLength ? Number(result.realWorldLength).toFixed(3) + ' ' + result.unit : 'N/A'}</li>`;
+                const grainSize = result.averageGrainSize ? Number(result.averageGrainSize) : null;
+                outputHTML += `<li>Line ${result.id}: Length = ${result.realWorldLength ? Number(result.realWorldLength).toFixed(3) + ' ' + result.unit : 'N/A'}`;
+                if (grainSize !== null) {
+                    outputHTML += `, Avg. Grain Size = ${grainSize.toFixed(3) + ' ' + result.grainUnit}`;
+                }
+                outputHTML += `</li>`;
             } else if (result.type === 'ellipse') {
                 const realWorldArea = Number(result.realWorldArea);
                 const realWorldPerimeter = Number(result.realWorldPerimeter);
