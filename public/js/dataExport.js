@@ -7,7 +7,7 @@ export async function fetchExportedData() {
     const token = localStorage.getItem('token');
     if (token) {
         try {
-            const response = await fetch('/api/export/data', {
+            const response = await fetch('/api/analyze/export/data', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -15,8 +15,7 @@ export async function fetchExportedData() {
 
             if (response.ok) {
                 const data = await response.json();
-                const formattedData = formatDataForDisplay(data);
-                exportedDataDisplay.textContent = formattedData;
+                // exportedDataDisplay.textContent = formatDataForDisplay(data);
                 if (exportDataButton) {
                     exportDataButton.style.display = 'block'; // Show the download button
                     exportedDataDisplay.dataset.exportedData = JSON.stringify(data);
@@ -40,19 +39,6 @@ export async function fetchExportedData() {
         if (exportDataButton) {
             exportDataButton.style.display = 'none';
         }
-    }
-}
-
-// Helper function to format data for display
-function formatDataForDisplay(data) {
-    if (Array.isArray(data) && data.length > 0) {
-        const headers = Object.keys(data[0]).join('\t') + '\n';
-        const rows = data.map(item => Object.values(item).join('\t')).join('\n');
-        return headers + rows;
-    } else if (typeof data === 'object' && data !== null) {
-        return JSON.stringify(data, null, 2); // Pretty print JSON
-    } else {
-        return String(data);
     }
 }
 

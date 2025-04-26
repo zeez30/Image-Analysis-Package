@@ -112,6 +112,8 @@ function countIntercepts(intensities, threshold = 15) {
     return intercepts;
 }
 
+const userAnalysisResults = {};
+
 // Analyze Grain Size
 router.post('/grainsize', verifyToken, async (req, res) => {
     try {
@@ -208,10 +210,25 @@ router.post('/grainsize', verifyToken, async (req, res) => {
             }
         }
 
+        // Store the results for the current user
+        userAnalysisResults[req.userId] = analysisResults;
+
         res.json(analysisResults);
     } catch (error) {
         console.error('Error during grain size analysis:', error);
         res.status(500).json({ error: 'Error during grain size analysis', details: error.message });
+    }
+});
+
+// Export Data Route
+router.get('/export/data', verifyToken, async (req, res) => {
+    const userId = req.userId;
+    const results = userAnalysisResults[userId];
+
+    if (results) {
+        res.json(results);
+    } else {
+        res.status(404).json({ message: 'No analysis data found for this user.' });
     }
 });
 

@@ -1,5 +1,6 @@
 // Import necessary elements from other modules if needed
 import { calibrationCanvas, calibrationFactor, units as calibrationUnits } from './calibration.js';
+import { fetchExportedData } from './dataExport.js';
 
 // Get references to the toolbar buttons
 const lineToolButton = document.getElementById('lineToolButton');
@@ -66,6 +67,7 @@ async function initiateGrainSizeAnalysis() {
             const results = await response.json();
             console.log('Grain size analysis results:', results);
             displayAnalysisResults(results);
+            await fetchExportedData();
         } else {
             const errorData = await response.json();
             console.error('Grain size analysis failed:', errorData.error || 'Unknown error');
@@ -76,39 +78,6 @@ async function initiateGrainSizeAnalysis() {
         alert('Error sending analysis request.');
     }
 }
-
-// function displayAnalysisResults(results) {
-//     const exportedDataDisplay = document.getElementById('exportedDataDisplay');
-//     if (!exportedDataDisplay) {
-//         console.error('exportedDataDisplay element not found.');
-//         return;
-//     }
-//     exportedDataDisplay.innerHTML = ''; // Clear previous results
-//
-//     if (results && results.length > 0) {
-//         let outputHTML = '<h3>Analysis Results:</h3><ul>';
-//         results.forEach(result => {
-//             if (result.type === 'line') {
-//                 outputHTML += `<li>Line ${result.id}: Length = ${result.realWorldLength ? Number(result.realWorldLength).toFixed(3) + ' ' + result.unit : 'N/A'}</li>`;
-//             } else if (result.type === 'ellipse') {
-//                 const realWorldArea = Number(result.realWorldArea);
-//                 const realWorldPerimeter = Number(result.realWorldPerimeter);
-//                 const averageGrainSize = result.averageGrainSize ? Number(result.averageGrainSize) : null;
-//
-//                 outputHTML += `<li>Ellipse ${result.id}: Area = ${isNaN(realWorldArea) ? 'N/A' : realWorldArea.toFixed(3) + ' ' + result.unit}`;
-//                 outputHTML += `, Perimeter = ${isNaN(realWorldPerimeter) ? 'N/A' : realWorldPerimeter.toFixed(3)} ${result.unit.slice(0, -1)}`; // Assuming unit for perimeter is the base unit
-//                 if (averageGrainSize !== null) {
-//                     outputHTML += `, Avg. Grain Size = ${averageGrainSize.toFixed(3) + ' ' + result.grainUnit}`;
-//                 }
-//                 outputHTML += `</li>`;
-//             }
-//         });
-//         outputHTML += '</ul>';
-//         exportedDataDisplay.innerHTML = outputHTML;
-//     } else {
-//         exportedDataDisplay.textContent = 'No analysis results received.';
-//     }
-// }
 
 function displayAnalysisResults(results) {
     const exportedDataDisplay = document.getElementById('exportedDataDisplay');
