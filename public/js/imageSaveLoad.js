@@ -1,4 +1,4 @@
-import {loadCurrentImage, clearCurrentImage, saveCurrentImage} from './indexedDBImageStore.js';
+import {loadCurrentImage, saveCurrentImage} from './indexedDBImageStore.js';
 import { setOriginalImageDataURL } from './imageUtils.js';
 
 const calibrationCanvas = document.getElementById('calibrationCanvas'); // Get the canvas
@@ -17,7 +17,7 @@ export async function loadImage() {
             calibrationCanvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             calibrationCanvas.style.display = 'block';
-            setOriginalImageDataURL(calibrationCanvas.toDataURL('image/png')); // Set originalImageDataURL here
+            setOriginalImageDataURL(calibrationCanvas.toDataURL('image/png'));
         };
         img.src = imageData;
     };
@@ -26,7 +26,6 @@ export async function loadImage() {
         const storedImageFromIDB = await loadCurrentImage();
         if (storedImageFromIDB) {
             loadImageOnCanvas(storedImageFromIDB);
-            return; // Image loaded from IndexedDB
         } else {
             console.log('No current image found in IndexedDB, checking persistent storage...');
             const token = localStorage.getItem('token');
@@ -84,7 +83,7 @@ export async function saveImage() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ imageData: imageDataURL.split(',')[1], mimeType: 'image/png', filename: 'canvas_image.png', size: imageDataURL.length }) // Adjust data as needed
+            body: JSON.stringify({ imageData: imageDataURL.split(',')[1], mimeType: 'image/png', filename: 'canvas_image.png', size: imageDataURL.length })
         });
 
         if (response.ok) {

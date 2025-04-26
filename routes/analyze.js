@@ -40,15 +40,16 @@ function calculateEllipsePerimeter(radiusX, radiusY) {
     return Math.PI * (radiusX + radiusY) * (1 + (3 * h) / (10 + Math.sqrt(4 - 3 * h)));
 }
 
+// Image preprocessing for image grain analysis
 async function preprocessImage(imageDataURL) {
     try {
         const base64Data = imageDataURL.split(',')[1];
         const buffer = Buffer.from(base64Data, 'base64');
 
         const preprocessedBuffer = await sharp(buffer)
-            .sharpen({ sigma: 1.0 })
+            // .sharpen({ sigma: 0.5 })
             .grayscale()
-            .blur(1) // Adjust blur radius as needed
+            .blur(2)
             .toBuffer();
 
         return preprocessedBuffer.toString('base64');
@@ -99,7 +100,7 @@ async function sampleLineIntensities(imageBuffer, startX, startY, endX, endY, nu
 }
 
 // Helper function to count intercepts based on intensity changes
-function countIntercepts(intensities, threshold = 15) {
+function countIntercepts(intensities, threshold = 10) {
     let intercepts = 0;
     if (intensities.length < 2) {
         return 0;

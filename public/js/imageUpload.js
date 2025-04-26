@@ -21,7 +21,7 @@ document.getElementById('fileUpload').addEventListener('change', function() {
                         calibrationCanvas.height = img.height;
                         ctx.drawImage(img, 0, 0);
                         calibrationCanvas.style.display = 'block';
-                        setOriginalImageDataURL(calibrationCanvas.toDataURL('image/png')); // Set originalImageDataURL here
+                        setOriginalImageDataURL(calibrationCanvas.toDataURL('image/png'));
                     };
                     img.src = imageDataURL;
                 } else {

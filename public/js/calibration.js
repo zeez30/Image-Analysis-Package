@@ -12,10 +12,10 @@ const drawCalibrationPointsButton = document.getElementById('drawCalibrationPoin
 export let point1 = null;
 export let point2 = null;
 export let pixelDistance = null;
-let calibrationFactor = null; //tweaked to not export it initially
+let calibrationFactor = null;
 let isDrawingCalibrationPoints = false;
-let exportedUnits = ''; // Variable to hold the units for export
-export let calibrationUnits = 'µm'; // Declare and initialize calibrationUnits
+let exportedUnits = '';
+export let calibrationUnits = 'µm';
 
 import { redrawCanvas } from './imageUtils.js';
 
@@ -105,11 +105,6 @@ function calculatePixelDistance() {
     return null;
 }
 
-// export function setupCalibrationCanvas() {
-//     redrawCanvas(); // Call redrawCanvas to handle initial setup or image change
-//     calibrationCanvas.addEventListener('click', handleCanvasClick);
-// }
-
 export function setupCalibrationCanvas() {
     redrawCanvas(); // Call redrawCanvas to handle initial setup or image change
     calibrationCanvas.addEventListener('click', handleCanvasClick);
@@ -121,4 +116,4 @@ export function setupCalibrationCanvas() {
     });
 }
 
-export { calibrationFactor, exportedUnits as units }; //NOTE: unused export will cause js to not work
+export { calibrationFactor, exportedUnits as units };

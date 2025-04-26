@@ -78,24 +78,24 @@ async function loadCurrentImage() {
     });
 }
 
-// Clear the current image from IndexedDB
-async function clearCurrentImage() {
-    if (!db) {
-        db = await initializeDB();
-    }
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([IMAGE_STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(IMAGE_STORE_NAME);
-        const request = store.clear();
-        request.onsuccess = () => resolve();
-        request.onerror = (event) => {
-            console.error("Error clearing IndexedDB store:", event);
-            reject(event);
-        };
-    });
-}
+// // Clear the current image from IndexedDB
+// async function clearCurrentImage() {
+//     if (!db) {
+//         db = await initializeDB();
+//     }
+//     return new Promise((resolve, reject) => {
+//         const transaction = db.transaction([IMAGE_STORE_NAME], 'readwrite');
+//         const store = transaction.objectStore(IMAGE_STORE_NAME);
+//         const request = store.clear();
+//         request.onsuccess = () => resolve();
+//         request.onerror = (event) => {
+//             console.error("Error clearing IndexedDB store:", event);
+//             reject(event);
+//         };
+//     });
+// }
 
 // Initialize the database when the module loads
 initializeDB().catch(error => console.error("Failed to initialize IndexedDB:", error));
 
-export { saveCurrentImage, loadCurrentImage, clearCurrentImage };
+export { saveCurrentImage, loadCurrentImage};

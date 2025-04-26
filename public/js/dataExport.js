@@ -15,7 +15,6 @@ export async function fetchExportedData() {
 
             if (response.ok) {
                 const data = await response.json();
-                // exportedDataDisplay.textContent = formatDataForDisplay(data);
                 if (exportDataButton) {
                     exportDataButton.style.display = 'block'; // Show the download button
                     exportedDataDisplay.dataset.exportedData = JSON.stringify(data);

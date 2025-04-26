@@ -4,10 +4,6 @@ export function setOriginalImageDataURL(url) {
     originalImageDataURL = url;
 }
 
-export function getOriginalImageDataURL() {
-    return originalImageDataURL;
-}
-
 export function redrawCanvas() {
     const storedImage = localStorage.getItem('uploadedImage');
     const calibrationCanvas = document.getElementById('calibrationCanvas');
@@ -21,7 +17,7 @@ export function redrawCanvas() {
             calibrationCanvas.width = img.naturalWidth;
             calibrationCanvas.height = img.naturalHeight;
             ctx.drawImage(img, 0, 0, calibrationCanvas.width, calibrationCanvas.height);
-            setOriginalImageDataURL(calibrationCanvas.toDataURL('image/png')); // Use the setter
+            setOriginalImageDataURL(calibrationCanvas.toDataURL('image/png'));
             import('./calibration.js').then(module => {
                 if (module.point1) module.drawPoint(module.point1, 'red');
                 if (module.point2) module.drawPoint(module.point2, 'blue');
@@ -37,6 +33,6 @@ export function redrawCanvas() {
             module.point1 = null;
             module.point2 = null;
         });
-        setOriginalImageDataURL(null); // Use the setter
+        setOriginalImageDataURL(null);
     }
 }

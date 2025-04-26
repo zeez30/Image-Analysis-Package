@@ -11,7 +11,7 @@ const drawingCanvas = document.getElementById('drawingCanvas');
 const drawingCtx = drawingCanvas.getContext('2d');
 
 // State variables for drawing
-let currentTool = null; // Keep track of the active tool
+let currentTool = null;
 let drawing = false;
 let startX, startY;
 let endX, endY;
@@ -38,7 +38,7 @@ async function initiateGrainSizeAnalysis() {
         alert('Calibration canvas not found.');
         return;
     }
-    const imageDataURL = canvas.toDataURL('image/png'); // Or however your image is best represented
+    const imageDataURL = canvas.toDataURL('image/png');
 
     const analysisData = {
         imageData: imageDataURL,
@@ -145,7 +145,7 @@ function resizeDrawingCanvas() {
 // Call resizeDrawingCanvas initially
 resizeDrawingCanvas();
 
-// Listen for changes in the calibration canvas dimensions (e.g., when a new image is loaded)
+// Listen for changes in the calibration canvas dimensions
 const calibrationCanvasObserver = new MutationObserver(mutationsList => {
     for (const mutation of mutationsList) {
         if (mutation.type === 'attributes' && (mutation.attributeName === 'width' || mutation.attributeName === 'height')) {
@@ -269,5 +269,5 @@ function redrawDrawingCanvas() {
     });
 }
 
-// Export the redrawDrawingCanvas function in case other modules need to trigger a redraw
+// Export redrawDrawingCanvas function
 export { redrawDrawingCanvas };
