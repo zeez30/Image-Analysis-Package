@@ -39,8 +39,7 @@ async function imageRotate(degrees, inputPath) {
 async function imageBrightness(brightness, inputPath) {
     try {
         const image = await Jimp.read(inputPath);
-        let totalBrightness = (brightness + 1);
-        image.brightness(totalBrightness);
+        image.brightness(brightness);
 
         return await image.getBuffer('image/png');
     } catch (error) {

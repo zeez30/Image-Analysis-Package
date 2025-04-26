@@ -25,8 +25,9 @@ const rotateRightButton = document.getElementById('rotateRight');
 const brightnessButton = document.getElementById('brightnessButton');
 const brightnessDropdownContainer = document.getElementById('brightnessDropdownContainer');
 const brightnessDropdownContent = document.getElementById('brightnessDropdownContent');
-const brightnessSlider = document.getElementById('brightnessSlider');
-const brightnessValueDisplay = document.getElementById('brightnessValue');
+// const brightnessSlider = document.getElementById('brightnessSlider');
+const brightnessDropdown = document.getElementById('brightnessDropdown');
+// const brightnessValueDisplay = document.getElementById('brightnessValue');
 // let originalImageDataURL = null;
 
 // Button Functionality
@@ -197,10 +198,9 @@ async function rotateCanvas(degrees) {
     }
 }
 
-// Brightness Slider Event Listener
-brightnessSlider.addEventListener('input', async () => {
-    const brightnessValue = parseFloat(brightnessSlider.value);
-    brightnessValueDisplay.textContent = parseFloat(brightnessValue).toFixed(1);
+// Brightness Dropdown Event Listener
+brightnessDropdown.addEventListener('change', async () => {
+    const brightnessValue = parseFloat(brightnessDropdown.value);
     await adjustBrightness(brightnessValue);
 });
 
@@ -237,7 +237,6 @@ async function adjustBrightness(brightness) {
                 ctx.drawImage(img, 0, 0);
                 URL.revokeObjectURL(adjustedImageURL);
                 console.log(`Image brightness adjusted to ${brightness}.`);
-                setOriginalImageDataURL(canvas.toDataURL('image/png')); // Use the setter
             };
             img.src = adjustedImageURL;
         } else {
