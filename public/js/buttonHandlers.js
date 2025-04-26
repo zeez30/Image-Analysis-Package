@@ -25,10 +25,14 @@ const rotateRightButton = document.getElementById('rotateRight');
 const brightnessButton = document.getElementById('brightnessButton');
 const brightnessDropdownContainer = document.getElementById('brightnessDropdownContainer');
 const brightnessDropdownContent = document.getElementById('brightnessDropdownContent');
-// const brightnessSlider = document.getElementById('brightnessSlider');
 const brightnessDropdown = document.getElementById('brightnessDropdown');
-// const brightnessValueDisplay = document.getElementById('brightnessValue');
-// let originalImageDataURL = null;
+
+const toggleGreyscaleCheckbox = document.getElementById('greyscaleToggle');
+const sharpnessSlider = document.getElementById('sharpnessSlider');
+const sharpnessValueDisplay = document.getElementById('sharpnessValue');
+const smoothingSlider = document.getElementById('smoothingSlider');
+const smoothingValueDisplay = document.getElementById('smoothingValue');
+
 
 // Button Functionality
 loadButton.addEventListener('click', (e) => {
@@ -247,5 +251,185 @@ async function adjustBrightness(brightness) {
     } catch (error) {
         console.error('Error sending brightness request:', error);
         alert('Error sending brightness request.');
+    }
+}
+
+// Greyscale Checkbox Event Listener
+toggleGreyscaleCheckbox.addEventListener('change', async () => {
+    const greyscale = toggleGreyscaleCheckbox.checked;
+    await applyGreyscale(greyscale);
+});
+
+async function applyGreyscale(greyscale) {
+    const canvas = calibrationCanvas;
+    if (!canvas || !originalImageDataURL) {
+        console.error('Canvas or original image not found.');
+        alert('Error: Canvas or original image not loaded.');
+        return;
+    }
+
+    const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+    try {
+        const response = await fetch('/api/manipulate/greyscale', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+            },
+            body: JSON.stringify({
+                greyscale: greyscale,
+                imageData: originalImageDataURL,
+            }),
+        });
+
+        if (response.ok) {
+            const processedBlob = await response.blob();
+            const processedImageURL = URL.createObjectURL(processedBlob);
+
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(processedImageURL);
+                console.log(`Greyscale applied: ${greyscale}`);
+                setOriginalImageDataURL(canvas.toDataURL('image/png'));
+            };
+            img.src = processedImageURL;
+        } else if (response.status === 401) {
+            console.error('Greyscale request unauthorized. Please log in.');
+            alert('Unauthorized: Please log in to perform this action.');
+            // Optionally, redirect the user to the login page
+        } else {
+            const errorText = await response.text(); // Get the error message as text
+            console.error('Greyscale application failed:', errorText || 'Unknown error');
+            alert(`Greyscale application failed: ${errorText || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error sending greyscale request:', error);
+        alert('Error sending greyscale request.');
+    }
+}
+
+// Sharpness Slider Event Listener
+sharpnessSlider.addEventListener('input', async () => {
+    const sharpnessValue = parseFloat(sharpnessSlider.value);
+    sharpnessValueDisplay.textContent = sharpnessValue.toFixed(1);
+    await applySharpness(sharpnessValue);
+});
+
+async function applySharpness(sharpness) {
+    const canvas = calibrationCanvas;
+    if (!canvas || !originalImageDataURL) {
+        console.error('Canvas or original image not found.');
+        alert('Error: Canvas or original image not loaded.');
+        return;
+    }
+
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch('/api/manipulate/sharpen', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Include the token
+            },
+            body: JSON.stringify({
+                sharpness: sharpness,
+                imageData: originalImageDataURL,
+            }),
+        });
+
+        if (response.ok) {
+            const processedBlob = await response.blob();
+            const processedImageURL = URL.createObjectURL(processedBlob);
+
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(processedImageURL);
+                console.log(`Sharpness applied: ${sharpness}`);
+                setOriginalImageDataURL(canvas.toDataURL('image/png'));
+            };
+            img.src = processedImageURL;
+        } else if (response.status === 401) {
+            console.error('Sharpness request unauthorized. Please log in.');
+            alert('Unauthorized: Please log in to perform this action.');
+        } else {
+            const errorText = await response.text();
+            console.error('Sharpness application failed:', errorText || 'Unknown error');
+            alert(`Sharpness application failed: ${errorText || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error sending sharpness request:', error);
+        alert('Error sending sharpness request.');
+    }
+}
+
+// Smoothing Slider Event Listener
+smoothingSlider.addEventListener('input', async () => {
+    const smoothingValue = parseInt(smoothingSlider.value);
+    smoothingValueDisplay.textContent = smoothingValue.toString();
+    await applySmoothing(smoothingValue);
+});
+
+async function applySmoothing(smoothing) {
+    const canvas = calibrationCanvas;
+    if (!canvas || !originalImageDataURL) {
+        console.error('Canvas or original image not found.');
+        alert('Error: Canvas or original image not loaded.');
+        return;
+    }
+
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch('/api/manipulate/smooth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Include the token
+            },
+            body: JSON.stringify({
+                smoothing: smoothing,
+                imageData: originalImageDataURL,
+            }),
+        });
+
+        if (response.ok) {
+            const processedBlob = await response.blob();
+            const processedImageURL = URL.createObjectURL(processedBlob);
+
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(processedImageURL);
+                console.log(`Smoothing applied: ${smoothing}`);
+                setOriginalImageDataURL(canvas.toDataURL('image/png'));
+            };
+            img.src = processedImageURL;
+        } else if (response.status === 401) {
+            console.error('Smoothing request unauthorized. Please log in.');
+            alert('Unauthorized: Please log in to perform this action.');
+        } else {
+            const errorText = await response.text();
+            console.error('Smoothing application failed:', errorText || 'Unknown error');
+            alert(`Smoothing application failed: ${errorText || 'Unknown error'}`);
+        }
+    } catch (error) {
+        console.error('Error sending smoothing request:', error);
+        alert('Error sending smoothing request.');
     }
 }
